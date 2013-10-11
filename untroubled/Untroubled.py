@@ -18,3 +18,5 @@ if __name__ == '__main__':
     unt.show()
     
     sys.exit(app.exec_())
+    
+#$("div[id*='div']:contains('Modify Package') >div:contains('Package ')")
