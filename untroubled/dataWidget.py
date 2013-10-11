@@ -278,7 +278,8 @@ class Ui_Form(QtGui.QFrame):
         self.frame_data_tabs.setCurrentIndex(2)
         self.tabWidget_untrouble.setCurrentIndex(4)
         self.tabWidget_browser.setCurrentIndex(0)
-        QtCore.QObject.connect(self.QWebView_browser_tab, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBrowserUrlBar)
+        
+        self.dashboard.loadFinished.connect(self.login)
         QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBillingUrlBar)
         
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -310,15 +311,21 @@ class Ui_Form(QtGui.QFrame):
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_browser), _translate("Form", "Browser", None))
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_console), _translate("Form", "Console", None))
 
-    def dashLogin(self):
-        pass
-        '''
-        self.QWebView_billing.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784');")
-        print self.QWebView_billing.page().mainFrame().evaluateJavaScript("window.DashboardChatWidgets.staffLogin(\"bdupree\",\"Bgd938784\");")
-        QtWebKit.QWebFrame.toHtml()
-        #frame = QtWebKit.QWebPage.j
-        '''
+    def login(self):
+        QtCore.QTimer.singleShot(2000, self.dbLoginTrue)
+
+        
+    def loginTrue(self):
+        if self.loggedIn:
+            return
+        self.QWebView_billing.page().mainFrame().evaluateJavaScript("formfield.username.value='bdupree';formfield.password.value='Bgd938784';formfield.submit()")
+        self.loggedIn = True
+
     def setBilling(self,url):
+        if "https://gbadmin.hostgator.com/login/" in self.QWebView_billing.url():
+            self.loggedIn = False
+            self.loginTrue()
+            return
         self.QWebView_billing.setUrl(QtCore.QUrl(url))
     
     def getBilling(self):

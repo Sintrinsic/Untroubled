@@ -17,7 +17,7 @@ class cmdExecutor(object):
         Constructor
         '''
         self.breakers = ["|",";",">"]
-        cmdstr = open('/home/sintrinsic/projects/Copy of Untroubled/untroubled/data/commandList').read()
+        cmdstr = open('/home/bdupree/workspace/Untroubled/untroubled/data/commandList').read()
         self.cmds = cmdstr.split("\n")
         self.chatshell = chatShell
         

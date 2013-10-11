@@ -37,7 +37,7 @@ class vZoneLocal(object):
         self.errors = []
         self.typedRecords = {"@":[],"NS":[],"SOA":[],"MX":[],"Related":[]}
         self.zoneFile = ""
-        records = open("/home/sintrinsic/projects/Copy of Untroubled/untroubled/dns/zt1").read()
+        records = open("/home/bdupree/workspace/Untroubled/untroubled/dns/zt1").read()
         self.rawRecords = self.parseText(records);
         self.decode(self.rawRecords)
         self.printRecords()

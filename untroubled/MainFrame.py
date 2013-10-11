@@ -48,7 +48,7 @@ class Ui_MainWindow(QtCore.QObject):
         self.frame.setObjectName(_fromUtf8("frame"))
         self.dashboard = QtWebKit.QWebView(self.frame)
         #self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
-        self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://localhost")))
+        self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
         self.dashboard.setObjectName(_fromUtf8("dashboard"))
         self.dashboard.resize(QtCore.QSize(1,1))
         self.horizontalLayout = QtGui.QHBoxLayout(self.frame)
@@ -133,15 +133,17 @@ class Ui_MainWindow(QtCore.QObject):
     
     def dbLoginTrue(self):
         print "logintrue fired"
-        #self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784')")        
+        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784')")        
         self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
         QtCore.QTimer.singleShot(2000, self.startCheck)
 
 
     def startCheck(self):    
-        print "Checking"    
-        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
+        print "Updating Chats"    
+        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){if(DashboardChatWidgets.chats[chat].clientId > 1){DashboardChatWidgets.chats[chat].billingUrl="https://gbadmin.hostgator.com/client/"+DashboardChatWidgets.chats[chat].clientId;cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
         self.dashboard.page().mainFrame().evaluateJavaScript("unt.chatCallback(cList)")
+        QtCore.QTimer.singleShot(4000, self.startCheck)
+
 
     def fakeCallback(self):
         self.chatCallback("1245323,Brandon,http://google.com,12354|845823,Bob,http://google.com,12354|1123556,tom,http://google.com,12354")
