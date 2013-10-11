@@ -1,0 +1,24 @@
+; cPanel first:11.38.2.7 (update_time):1381077982 11.38.2.7: Cpanel::ZoneFile::VERSION:1.3 hostname:vps.pwns.me latest:11.38.2.7
+; Zone file for vps.pwns.me
+$TTL 14400
+@      86400	IN      SOA     ns1.pwns.me. root.life.pwns.me. (
+		2013100601	; serial, todays date+todays
+		86400		; refresh, seconds
+		7200		; retry, seconds
+		3600000		; expire, seconds
+		86400 )		; minimum, seconds
+
+vps.pwns.me. 86400 IN NS ns1.pwns.me.
+vps.pwns.me. 86400 IN NS ns2.pwns.me.
+
+
+vps.pwns.me. IN A 192.185.80.152
+
+localhost.vps.pwns.me. IN A 127.0.0.1
+
+vps.pwns.me. IN MX 0 vps.pwns.me.
+
+mail IN CNAME vps.pwns.me.
+www IN CNAME vps.pwns.me.
+ftp IN CNAME vps.pwns.me.
+

@@ -1,0 +1,30 @@
+-------------------------
+----Remote results-------
+-------------------------
+
+---------- Registrars NS entries:
+pwns.me.		86400	IN	NS	ns1.pwns.me.
+pwns.me.		86400	IN	NS	ns2.pwns.me.
+ns1.pwns.me.		86400	IN	A	216.224.161.56
+ns2.pwns.me.		86400	IN	A	216.224.161.56
+;; Received 97 bytes from 199.254.62.1#53(199.254.62.1) in 76 ms
+
+---------- Authoritative DNS A/NS records:
+dns.pwns.me.		14400	IN	A	31.170.160.100
+dns.pwns.me.		86400	IN	NS	ns2.pwns.me.
+dns.pwns.me.		86400	IN	NS	ns1.pwns.me.
+ns1.pwns.me.		14400	IN	A	216.224.161.56
+ns2.pwns.me.		14400	IN	A	216.224.161.56
+;; Received 113 bytes from 216.224.161.56#53(216.224.161.56) in 0 ms
+Remote IP: 31.170.160.100
+-------------------------
+------Local Results------
+-------------------------
+dns.pwns.me.	86400	IN	NS	ns1.pwns.me.
+dns.pwns.me.	86400	IN	NS	ns2.pwns.me.
+dns.pwns.me.	14400	IN	A	31.170.160.100
+Local IP: 31.170.160.100
+-------------------------
+-------Conclusion--------
+-------------------------
+Local and remote IPs match
