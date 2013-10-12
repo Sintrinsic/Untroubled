@@ -29,6 +29,7 @@ class Ui_Form(QtGui.QFrame):
     def __init__(self, parent):
         super(Ui_Form,self).__init__(parent)
         self.setupUi(self)
+        self.loggedIn = False
         
     
     def setupUi(self, Form):
@@ -279,15 +280,15 @@ class Ui_Form(QtGui.QFrame):
         self.tabWidget_untrouble.setCurrentIndex(4)
         self.tabWidget_browser.setCurrentIndex(0)
         
-        self.dashboard.loadFinished.connect(self.login)
+        self.QWebView_billing.loadFinished.connect(self.login)
         QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBillingUrlBar)
         
         QtCore.QMetaObject.connectSlotsByName(Form)
 
         ''' Events '''
 
-        QtCore.QObject.connect(self.lineEdit_console, QtCore.SIGNAL("returnPressed()"), self.dashLogin)
-        QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.dashLogin)
+        #QtCore.QObject.connect(self.lineEdit_console, QtCore.SIGNAL("returnPressed()"), self.dashLogin)
+        #QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.)
 
 
 
@@ -312,7 +313,7 @@ class Ui_Form(QtGui.QFrame):
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_console), _translate("Form", "Console", None))
 
     def login(self):
-        QtCore.QTimer.singleShot(2000, self.dbLoginTrue)
+        QtCore.QTimer.singleShot(2000, self.loginTrue)
 
         
     def loginTrue(self):

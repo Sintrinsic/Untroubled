@@ -7,7 +7,7 @@ import numpy
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtGui import QStandardItemModel, QStandardItem
 from PyQt4.QtCore import QObject
-from dataWidget import Ui_Form as dataFrame
+from untroubled.chatSession.dataWidget import Ui_Form as dataFrame
 
 
 

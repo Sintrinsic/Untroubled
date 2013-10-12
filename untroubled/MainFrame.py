@@ -8,8 +8,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui, QtWebKit
-import dataWidget, re, numpy, sessionManager
-
+import re, numpy
+from untroubled.chatSession import  sessionManager, dataWidget
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
