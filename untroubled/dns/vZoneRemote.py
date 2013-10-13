@@ -1,16 +1,18 @@
-'''
-Created on Mar 9, 2013
-need to find hostname of NS IP, and see if it matches
-@author: sintrinsic
-'''
+
 import re, numpy, socket
 from rdh import rdh
 
 class vZoneRemote(object):
+    '''
+    Runs a dig +trace $targetDomain and parses out the records vital to the target domain on both the registrar and authoritative level. 
+    Does analysis on delegation path, including the validity of the nameservers at the registrar, and the congruity/accessibility of the authoritative zone. 
+    Acquires vital information on IPs and domains such as the IP of domain references and the hostname of any IP listed.
+    Compiles known errors in its errors list.
+    Provides interface members to fetch, display, and compare records (with other vZone files)
+    To-do: LOTS
+    '''
+    
     def __init__(self, domain):
-        '''
-        Constructor
-        '''
         self.patternDomain = re.compile(r'([\b\s^]+)?(([a-zA-Z\d\-]+\.)+([A-Za-z\-]+))(\.)?')
 
         self.remoteHandler = rdh()

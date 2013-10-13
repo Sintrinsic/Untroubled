@@ -10,7 +10,7 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtWebKit import QWebView as QWebView
 from PyQt4 import QtWebKit
-from untroubled.dns.dnsAutomater import Ui_frame as dnsAutomater
+from untroubled.qtwidgets import dnsWidget
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -141,7 +141,7 @@ class Ui_Form(QtGui.QFrame):
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
 
 
-        self.frame_dns_info = dnsAutomater(self.tab_untrouble_dns)
+        self.frame_dns_info = dnsWidget(self.tab_untrouble_dns)
         self.frame_dns_info.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame_dns_info.setFrameShadow(QtGui.QFrame.Plain)
         self.frame_dns_info.setObjectName(_fromUtf8("frame_dns_info"))

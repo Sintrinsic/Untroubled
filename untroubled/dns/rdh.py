@@ -1,9 +1,7 @@
 '''
-Created on Mar 27, 2013
-
-@author: sintrinsic
+DEPRICATED!! Only in use until I fix things.
 '''
-from untroubled.data.cmdParser import cmdExecutor
+from untroubled.commands.cmdParser import cmdExecutor
 class rdh(object):
     '''
     Remote Data Handler class:

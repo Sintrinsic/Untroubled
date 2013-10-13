@@ -5,7 +5,7 @@ Created on Oct 3, 2013
 '''
 import MainFrame, sys
 from PyQt4 import QtCore, QtGui
-from untroubled.data import cmdParser, chatshell
+from untroubled.commands import cmdParser, chatshell
 from untroubled.chatSession import dataWidget
 
 if __name__ == '__main__':

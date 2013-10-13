@@ -1,7 +1,5 @@
 '''
-Created on Mar 9, 2013
 need to find hostname of NS IP, and see if it matches
-@author: sintrinsic
 '''
 import re
 import numpy
@@ -9,21 +7,16 @@ import socket
 
 class vZoneLocal(object):
     '''
-    Virtual Zone parser that accepts a full text printout from either 'dig +trace domain' or cat '/var/named/domain.db'
-    All that's needed is passing the full response of one of those commands as the 'records' arg.
-    Nameservers according to this vZoneLocal stored in self.ns
-    Final destination IP/domain stored in self.destination
-    self.keyrecords contains all records that pertain to the resolution of this domain specifically
-    self.errors contains troubleshooting issues that may need to be resolved for the domain to function properly.
-    self.printInfo shows key records, errors found, and the final destination according to this vZoneLocal, for human-readable error-checking.
-    Improvements needed:
-        Only tested on a handful of domains. More testing is needed to see if other domains deviate from these patterns. 
+    Loads a raw DNS zonefile and parses out the records vital to the target domain. 
+    Does analysis on conflicting, incorrect, and missing records.
+    Acquires vital information on IPs and domains such as the IP of external domain references and the hostname of any IP listed.
+    Compiles known errors in its errors list.
+    Provides interface members to fetch, display, and compare records (with other vZone files)
+    To-do: LOTS
     '''
     
     def __init__(self, records, domain, rdh):
-        '''
-        Constructor
-        '''
+
         self.patternDomain = re.compile(r'([\b\s^]+)?(([a-zA-Z\d\-]+\.)+([A-Za-z\-]+))(\.)?')
 
         self.remoteHandler = rdh
