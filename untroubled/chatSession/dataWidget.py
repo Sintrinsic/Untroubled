@@ -10,7 +10,7 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtWebKit import QWebView as QWebView
 from PyQt4 import QtWebKit
-from untroubled.qtwidgets import dnsWidget
+from untroubled.qtwidgets.dnsWidget import Ui_dnsWidget as dnsWidget
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -142,9 +142,9 @@ class Ui_Form(QtGui.QFrame):
 
 
         self.frame_dns_info = dnsWidget(self.tab_untrouble_dns)
-        self.frame_dns_info.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_dns_info.setFrameShadow(QtGui.QFrame.Plain)
-        self.frame_dns_info.setObjectName(_fromUtf8("frame_dns_info"))
+        #self.frame_dns_info.setFrameShape(QtGui.QFrame.StyledPanel)
+        #self.frame_dns_info.setFrameShadow(QtGui.QFrame.Plain)
+        #self.frame_dns_info.setObjectName(_fromUtf8("frame_dns_info"))
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.frame_dns_info)
         self.horizontalLayout_7.setMargin(0)
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
@@ -288,7 +288,7 @@ class Ui_Form(QtGui.QFrame):
         ''' Events '''
 
         #QtCore.QObject.connect(self.lineEdit_console, QtCore.SIGNAL("returnPressed()"), self.dashLogin)
-        #QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.)
+        QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.login)
 
 
 
@@ -323,17 +323,20 @@ class Ui_Form(QtGui.QFrame):
         self.loggedIn = True
 
     def setBilling(self,url):
-        if "https://gbadmin.hostgator.com/login/" in self.QWebView_billing.url():
+        if "login" in str(self.QWebView_billing.url()):
             self.loggedIn = False
             self.loginTrue()
             return
-        self.QWebView_billing.setUrl(QtCore.QUrl(url))
+        if url != str(self.QWebView_billing.url()):
+            print url
+            print str(self.QWebView_billing.url())
+            self.QWebView_billing.setUrl(QtCore.QUrl(url))
     
     def getBilling(self):
-        return str(self.QWebView_billing.url())
+        url = str(self.QWebView_billing.url())
+        return url
     
     def runConsoleCommand(self):
-        print "return pressed"
         cmd = self.lineEdit.text()
         self.lineEdit.clear()
         self.lineEdit.update()
@@ -342,9 +345,9 @@ class Ui_Form(QtGui.QFrame):
         self.textBrowser.append(resp)
         
     def setBillingUrlBar(self, url):
-        print "billingUrl set to "+str(url)
+        print "billingUrl bar set to "+str(url)
         self.lineEdit_billing_search.setText(url.toString())
 
     def setBrowserUrlBar(self, url):
-        print "browserUrl set to "+str(url)
+        print "browserUrl bar set to "+str(url)
         self.lineEdit_browser.setText(url.toString())

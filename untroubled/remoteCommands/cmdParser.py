@@ -3,7 +3,8 @@ Created on Sep 29, 2013
 
 @author: bdupree
 '''
-import re, os, shlex, json, subprocess, commands
+import re, os, shlex, json, subprocess
+import commands
 
 
 class cmdExecutor(object):
@@ -17,7 +18,7 @@ class cmdExecutor(object):
         Constructor
         '''
         self.breakers = ["|",";",">"]
-        cmdstr = open('/home/bdupree/workspace/Untroubled/untroubled/data/commandList').read()
+        cmdstr = open('/home/bdupree/git/Untroubled/untroubled/remoteCommands/commandList').read()
         self.cmds = cmdstr.split("\n")
         self.chatshell = chatShell
         

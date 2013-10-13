@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from untroubled.commands.cmdParser import cmdExecutor
+from untroubled.remoteCommands.cmdParser import cmdExecutor
 from untroubled.dns import vZoneLocal, vZoneRemote
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -154,7 +154,7 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.textb_output.setObjectName(_fromUtf8("textb_output"))
         self.layoutV_output.addWidget(self.textb_output)
         self.layoutV_dns.addWidget(self.frame_output)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("currentIndexChanged(int)"),self.doDNS)
+        #QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("currentIndexChanged(int)"),self.doDNS)
 
         self.retranslateUi(dnsWidget)
         self.tabs_local.setCurrentIndex(0)

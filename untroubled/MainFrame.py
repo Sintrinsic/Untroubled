@@ -97,50 +97,26 @@ class Ui_MainWindow(QtCore.QObject):
         
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)        
-
-          
-    def getChats(self):
-        '''     messages                 : [],
-                chatId                   : startingDetails.chatId,
-                lastMessageReceived      : 0,
-                lastCustomerMessageTime  : 0,
-                lastStaffMessageTime     : 0,
-                happiness                : 0,
-                firstMessageTimestamp    : startingDetails.firstMessageTimestamp || 0,
-                chattingAs               : startingDetails.chattingAs || parent.chattingAs,
-                showInAssignedChatsList  : startingDetails.showInList===false?false:true,
-                isActive                 : true,
-                lastNoteRecieved         : 0,
-                viewingChatRetroactively : startingDetails.viewingChatRetroactively || false,
-                chatRating               : undefined,
-                isVerified               : false,
-                isVerifiedManually       : false,
-                isPinned                 : startingDetails.isPinned || false,
-                billingUrl               : false
-                DashboardChatWidgets.chats[chat].customerName       
-            '''
-        print "gotChats"
-        self.dbLogin()
-        #self.chats[chatId].getChatDetails()        
+   
     
     
     def dbLogin(self,success):
         QtCore.QTimer.singleShot(2000, self.dbLoginTrue)
         print "login fired"
-        #self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
+        self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
         #self.dashboard.page().mainFrame().evaluateJavaScript("function check(){unt.chatCallback('hello');setTimeout(function(){check()},2000)}")
         #self.dashboard.page().mainFrame().evaluateJavaScript("check();") 
     
     def dbLoginTrue(self):
         print "logintrue fired"
-        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784')")        
         self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
+        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784')")        
         QtCore.QTimer.singleShot(2000, self.startCheck)
 
 
     def startCheck(self):    
         print "Updating Chats"    
-        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){if(DashboardChatWidgets.chats[chat].clientId > 1){DashboardChatWidgets.chats[chat].billingUrl="https://gbadmin.hostgator.com/client/"+DashboardChatWidgets.chats[chat].clientId;cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
+        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){if(DashboardChatWidgets.chats[chat].clientId > 1){DashboardChatWidgets.chats[chat].billingUrl="https://gbadmin.hostgator.com/client/"+DashboardChatWidgets.chats[chat].clientId};cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
         self.dashboard.page().mainFrame().evaluateJavaScript("unt.chatCallback(cList)")
         QtCore.QTimer.singleShot(4000, self.startCheck)
 

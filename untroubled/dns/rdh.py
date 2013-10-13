@@ -1,7 +1,7 @@
 '''
 DEPRICATED!! Only in use until I fix things.
 '''
-from untroubled.commands.cmdParser import cmdExecutor
+from untroubled.remoteCommands.cmdParser import cmdExecutor
 class rdh(object):
     '''
     Remote Data Handler class:
