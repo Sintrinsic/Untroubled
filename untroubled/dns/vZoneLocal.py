@@ -1,9 +1,4 @@
-'''
-need to find hostname of NS IP, and see if it matches
-'''
 import re
-import numpy
-import socket
 
 class vZoneLocal(object):
     '''
@@ -15,26 +10,28 @@ class vZoneLocal(object):
     To-do: LOTS
     '''
     
-    def __init__(self, records, domain, rdh):
+    def __init__(self, domain, commandExecutor, server = None):
 
         self.patternDomain = re.compile(r'([\b\s^]+)?(([a-zA-Z\d\-]+\.)+([A-Za-z\-]+))(\.)?')
 
-        self.remoteHandler = rdh
+        self.commandExecutor = commandExecutor
         self.domain = domain
-        self.server = "gator1234.hostgator.com"
-        self.vHostIP = self.getVhostIP()
-        self.exists = False
+
         self.keyRecords = []    
         self.miscRecords = []
         self.destination = [] #final result A or CNAME record    
-        self.errors = []
         self.typedRecords = {"@":[],"NS":[],"SOA":[],"MX":[],"Related":[]}
-        self.zoneFile = ""
-        records = open("/home/bdupree/workspace/Untroubled/untroubled/dns/zt1").read()
-        self.rawRecords = self.parseText(records);
+        
+        self.errors = []
+        
+        self.text = self.commandExecutor("./viewzone "+domain)
+        self.rawRecords = self.parseText(self.text)
         self.decode(self.rawRecords)
         self.printRecords()
         
+        self.server = None
+        self.vHostIP = None
+        self.exists = False        
 
         
     def parseText(self, text):
@@ -47,7 +44,7 @@ class vZoneLocal(object):
         nsName = re.compile(r'(?:^; Zone file for ).*?(?:\n)',re.MULTILINE)
         zoneFile = nsName.findall(text)
         if len(zoneFile)>0:
-            self.zoneFile = re.sub("; Zone file for ","",str(zoneFile[0])).rstrip()
+            self.text = re.sub("; Zone file for ","",str(text[0])).rstrip()
         return chunks
             
     def decode(self, records):
@@ -98,15 +95,13 @@ class vZoneLocal(object):
         if self.typedRecords["SOA"][0] not in self.typedRecords["NS"]:
             self.errors.append("SOA record doesn't match an NS record.")
         
-        
-            
-        
+
     #Check first if the target domain is in the same zonefile. If it is, get the IP from here and add the corresponding record to keyrecords and return IP. Else, get remote IP and return.
     def getDomainIP(self,domain):
         targetDomain = re.sub("[\s\.]+$","", domain)
         rootDomain = ".".join(targetDomain.split(".")[-1:])
         ip = " "
-        if rootDomain in self.zoneFile:
+        if rootDomain in self.text:
             subPattern = re.compile(self.getSubPatternString(targetDomain))
             for r in self.rawRecords:
                 if subPattern.match(r[0]) and (r[2] == "A" or r[2] == "CNAME"):
@@ -118,10 +113,12 @@ class vZoneLocal(object):
             ip = " "+self.ping(targetDomain)+" "
         return ip
         
-    #Generates a regex tring that matches all possible variants that the target domain could be labled as (example: mail or mail.domain.com)
+        
+    #Generates a regex string that matches all possible variants that the target domain could be labeled as (example: mail or mail.domain.com)
     def getSubPatternString(self,domain):
-        subDomain = re.sub(self.zoneFile,"",domain)[:-1]
+        subDomain = re.sub(self.text,"",domain)[:-1]
         return '^('+self.domain+('|'+subDomain if subDomain else '')+')(\.)?'
+    
     
     def printRecords(self):
         records = ""
@@ -140,18 +137,38 @@ class vZoneLocal(object):
             returnString += '  '+' '.join(record)+"\n" 
         return returnString
     
+    
     def cleanTrailingDot(self,domain):
         elements = self.patternDomain.findall(domain)
         if elements: 
             domain = elements[0][1]
         return domain
         
-    def ping(self,domain):
-        return "192.168.0.1"
+        
+    def getResolvingIP(self,domain):
+        digOutput = self.commandExecutor.runCommand("dig +short A "+domain)
+        if digOutput:
+            return digOutput
+        else:
+            return "Offline" 
+
     
     def getVhostIP(self):
+        '''
+        ToDo:
+        uf = self.commandExecutor("uf "+self.domain+" "+self.server)
+        vHostIP = (parse ip from UF output)
+        return vHostIP
+        '''
         return "192.168.0.1"
     
+    
     def getServer(self, ip):
+        '''
+        ToDo: 
+        ipid = self.commandExecutor.runCommand("ipid "+ip)
+        server = (parse server name from output)
+        return server 
+        '''
         return "gator1234.hostgator.com"
         

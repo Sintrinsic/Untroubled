@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from untroubled.remoteCommands.cmdParser import cmdExecutor
+from untroubled.remoteCommands.cmdExecutor import cmdExecutor 
 from untroubled.dns import vZoneLocal, vZoneRemote
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
