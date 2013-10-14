@@ -5,14 +5,15 @@ Created on Oct 3, 2013
 '''
 import MainFrame, sys
 from PyQt4 import QtCore, QtGui
-from untroubled.remoteCommands import cmdParser, chatshell
+from untroubled.remoteCommands.cmdExecutor import cmdExecutor
+from untroubled.remoteCommands.chatshell import chatshell
 from untroubled.chatSession import dataWidget
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     unt = QtGui.QMainWindow()
-    cs = chatshell.chatshell()
-    cp = cmdParser.cmdExecutor(cs)
+    cs = chatshell()
+    cp =  cmdExecutor(cs)
     gui = MainFrame.Ui_MainWindow(cp,unt)
     gui.setupUi(unt)
     unt.show()

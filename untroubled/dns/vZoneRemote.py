@@ -128,7 +128,7 @@ class vZoneRemote(object):
         return "gator1234.hostgator.com"
     
     
-vz = vZoneRemote("life.pwns.me")
+
 
     
         

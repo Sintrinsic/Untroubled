@@ -31,6 +31,7 @@ class Ui_MainWindow(QtCore.QObject):
         self.activeClient = ""  
         self.clientListView = ""  
         self.clients = {}     
+        self.login = open("../login").read().split(" ")
        
     
     def setupUi(self, MainWindow):
@@ -110,7 +111,8 @@ class Ui_MainWindow(QtCore.QObject):
     def dbLoginTrue(self):
         print "logintrue fired"
         self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
-        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('bdupree','Bgd938784')")        
+        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('"+self.login[0]+"','"+self.login[1]+"')")        
+        
         QtCore.QTimer.singleShot(2000, self.startCheck)
 
 

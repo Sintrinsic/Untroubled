@@ -30,6 +30,7 @@ class Ui_Form(QtGui.QFrame):
         super(Ui_Form,self).__init__(parent)
         self.setupUi(self)
         self.loggedIn = False
+        self.loginCreds = open("../login").read().split(" ")
         
     
     def setupUi(self, Form):
@@ -319,7 +320,8 @@ class Ui_Form(QtGui.QFrame):
     def loginTrue(self):
         if self.loggedIn:
             return
-        self.QWebView_billing.page().mainFrame().evaluateJavaScript("formfield.username.value='bdupree';formfield.password.value='Bgd938784';formfield.submit()")
+        self.QWebView_billing.page().mainFrame().evaluateJavaScript("formfield.username.value='"+self.loginCreds[0]+"';formfield.password.value='"+self.loginCreds[1]+"';formfield.submit()")
+        
         self.loggedIn = True
 
     def setBilling(self,url):
