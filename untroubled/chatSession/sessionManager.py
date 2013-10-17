@@ -8,7 +8,10 @@ from PyQt4 import QtGui,QtCore
 from PyQt4.QtGui import QStandardItemModel, QStandardItem
 from PyQt4.QtCore import QObject
 from untroubled.chatSession.dataWidget import Ui_Form as dataFrame
+from untroubled.remoteCommands.cmdExecutor import cmdExecutor
+from untroubled.remoteCommands.chatshell import chatshell
 
+from untroubled.chatSession.ChatSession import ChatSession
 
 
 class sessionManager(object):
@@ -60,8 +63,7 @@ class sessionManager(object):
         for c in current:
             currentUrl = c[2]
             listItem = self.list[self.list[0:,0]==c[0]][0]
-            if currentUrl != listItem[4].getBilling():
-                listItem[4].setBilling(currentUrl) 
+            listItem[1].addBilling(currentUrl)
 
     def addSession(self,addArray,manual=False):
         #[id,name,billingURL,starTime]
@@ -71,8 +73,8 @@ class sessionManager(object):
         startTime = addArray[3]
         newIndex = len(self.list)
         
-        nameItem = QStandardItem(name)
         chatFrame = dataFrame(self.dataFrame)
+        nameItem = ChatSession(name,chatFrame,cmdExecutor(chatshell()))
         chatFrame.setVisible(False)
         self.layout.addWidget(chatFrame)
 

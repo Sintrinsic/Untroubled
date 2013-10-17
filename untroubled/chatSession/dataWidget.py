@@ -11,6 +11,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtWebKit import QWebView as QWebView
 from PyQt4 import QtWebKit
 from untroubled.qtwidgets.dnsWidget import Ui_dnsWidget as dnsWidget
+from untroubled.qtwidgets.packageWidget import Ui_packageWidget as packageWidget
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -164,9 +165,9 @@ class Ui_Form(QtGui.QFrame):
         self.tab_untrouble_package.setObjectName(_fromUtf8("tab_untrouble_package"))
         self.horizontalLayout_11 = QtGui.QHBoxLayout(self.tab_untrouble_package)
         self.horizontalLayout_11.setObjectName(_fromUtf8("horizontalLayout_11"))
-        self.treeView = QtGui.QTreeView(self.tab_untrouble_package)
-        self.treeView.setObjectName(_fromUtf8("treeView"))
-        self.horizontalLayout_11.addWidget(self.treeView)
+        self.packages = packageWidget(self.tab_untrouble_package, self.QWebView_billing)
+        self.packages.setObjectName(_fromUtf8("packages"))
+        self.horizontalLayout_11.addWidget(self.packages)
         self.tabWidget_untrouble.addTab(self.tab_untrouble_package, _fromUtf8(""))
         self.tab_untrouble_server = QtGui.QWidget()
         self.tab_untrouble_server.setObjectName(_fromUtf8("tab_untrouble_server"))
@@ -281,15 +282,14 @@ class Ui_Form(QtGui.QFrame):
         self.tabWidget_untrouble.setCurrentIndex(4)
         self.tabWidget_browser.setCurrentIndex(0)
         
-        self.QWebView_billing.loadFinished.connect(self.login)
-        QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBillingUrlBar)
-        
-        QtCore.QMetaObject.connectSlotsByName(Form)
-
         ''' Events '''
+        #self.QWebView_billing.loadFinished.connect(self.login)
+        QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBillingUrlBar)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+        
 
         #QtCore.QObject.connect(self.lineEdit_console, QtCore.SIGNAL("returnPressed()"), self.dashLogin)
-        QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.login)
+        #QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.login)
 
 
 
@@ -312,7 +312,7 @@ class Ui_Form(QtGui.QFrame):
         self.label_browser_data.setText(_translate("Form", "Info", None))
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_browser), _translate("Form", "Browser", None))
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_console), _translate("Form", "Console", None))
-
+    '''
     def login(self):
         QtCore.QTimer.singleShot(2000, self.loginTrue)
 
@@ -345,7 +345,7 @@ class Ui_Form(QtGui.QFrame):
         self.textBrowser.append("$ "+cmd)
         resp = self.chatshell.runCommand(str(cmd))
         self.textBrowser.append(resp)
-        
+'''       
     def setBillingUrlBar(self, url):
         print "billingUrl bar set to "+str(url)
         self.lineEdit_billing_search.setText(url.toString())
@@ -353,3 +353,4 @@ class Ui_Form(QtGui.QFrame):
     def setBrowserUrlBar(self, url):
         print "browserUrl bar set to "+str(url)
         self.lineEdit_browser.setText(url.toString())
+        

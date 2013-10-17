@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-
+from untroubled.billing.billingAccount import billingAccount
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -23,7 +23,13 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_packageWidget(object):
+class Ui_packageWidget(QtGui.QWidget):
+    def __init__(self, parent, billingBrowser):
+        super(Ui_packageWidget,self).__init__(parent)
+        self.billingBrowser = billingBrowser
+        self.setupUi(self)
+        
+    
     def setupUi(self, packageWidget):
         packageWidget.setObjectName(_fromUtf8("packageWidget"))
         packageWidget.resize(636, 537)
@@ -68,7 +74,7 @@ class Ui_packageWidget(object):
         self.textb_properties.setObjectName(_fromUtf8("textb_properties"))
         self.layoutH_content.addWidget(self.textb_properties)
         self.layoutV_packageWidget.addWidget(self.frame_content)
-
+        
         self.retranslateUi(packageWidget)
         QtCore.QMetaObject.connectSlotsByName(packageWidget)
 
