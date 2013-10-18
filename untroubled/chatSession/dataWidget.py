@@ -30,63 +30,50 @@ class Ui_Form(QtGui.QFrame):
     def __init__(self, parent):
         super(Ui_Form,self).__init__(parent)
         self.setupUi(self)
-        self.loggedIn = False
         self.loginCreds = open("../login").read().split(" ")
         
     
     def setupUi(self, Form):
-        #Form.setObjectName(_fromUtf8("Form"))
-        #Form.resize(1178, 721)
         self.horizontalLayout = QtGui.QHBoxLayout(Form)
-        self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.styleEdges("horizontalLayout", self.horizontalLayout, 0, 0)
+        
         self.frame_data = QtGui.QFrame(Form)
-        self.frame_data.setFrameShape(QtGui.QFrame.Panel)
-        self.frame_data.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame_data.setObjectName(_fromUtf8("frame_data"))
+        self.styleRaised(self.frame_data, "frame_data")
+        
         self.layout_data = QtGui.QVBoxLayout(self.frame_data)
-        self.layout_data.setSpacing(0)
-        self.layout_data.setMargin(0)
-        self.layout_data.setObjectName(_fromUtf8("layout_data"))
+        self.styleEdges("layout_data", self.layout_data, 0, 0)
+        
         self.frame_data_header = QtGui.QFrame(self.frame_data)
-        self.frame_data_header.setMinimumSize(QtCore.QSize(0, 30))
-        self.frame_data_header.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.frame_data_header.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_data_header.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame_data_header.setObjectName(_fromUtf8("frame_data_header"))
+        self.styleSizing(self.frame_data_header, hmin=30,hmax=30)
+        self.styleRaised(self.frame_data_header, "frame_data_header")
+
         self.horizontalLayout_4 = QtGui.QHBoxLayout(self.frame_data_header)
-        self.horizontalLayout_4.setSpacing(2)
-        self.horizontalLayout_4.setMargin(0)
-        self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
+        self.styleEdges("horizontalLayout_4", self.horizontalLayout_4, 2, 0)
+        
         self.frame_data_domainInfo = QtGui.QFrame(self.frame_data_header)
-        self.frame_data_domainInfo.setFrameShape(QtGui.QFrame.Box)
-        self.frame_data_domainInfo.setFrameShadow(QtGui.QFrame.Sunken)
-        self.frame_data_domainInfo.setObjectName(_fromUtf8("frame_data_domainInfo"))
+        self.stylePanel(self.frame_data_domainInfo, QtGui.QFrame.Box, QtGui.QFrame.Sunken, "frame_data_domainInfo")
+
         self.horizontalLayout_6 = QtGui.QHBoxLayout(self.frame_data_domainInfo)
-        self.horizontalLayout_6.setMargin(0)
-        self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
+        self.styleEdges("horizontalLayout_6", self.horizontalLayout_6, margin=0)
+
         self.label_package_select = QtGui.QLabel(self.frame_data_domainInfo)
-        self.label_package_select.setFrameShape(QtGui.QFrame.NoFrame)
-        self.label_package_select.setFrameShadow(QtGui.QFrame.Plain)
+        self.stylePanel(self.label_package_select, QtGui.QFrame.NoFrame, QtGui.QFrame.Plain, "label_package_select")
         self.label_package_select.setLineWidth(0)
         self.label_package_select.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_package_select.setObjectName(_fromUtf8("label_package_select"))
+
         self.horizontalLayout_6.addWidget(self.label_package_select)
         self.horizontalLayout_4.addWidget(self.frame_data_domainInfo)
         self.layout_data.addWidget(self.frame_data_header)
+        
         self.frame_data_content = QtGui.QFrame(self.frame_data)
-        self.frame_data_content.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_data_content.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame_data_content.setObjectName(_fromUtf8("frame_data_content"))
+        self.stylePanel(self.frame_data_content, QtGui.QFrame.StyledPanel, QtGui.QFrame.Raised, "frame_data_content")
+
         self.verticalLayout_6 = QtGui.QVBoxLayout(self.frame_data_content)
-        self.verticalLayout_6.setSpacing(0)
-        self.verticalLayout_6.setMargin(0)
-        self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
+        self.styleEdges("verticalLayout_6", self.verticalLayout_6, 0, 0)
+
         self.frame_data_content2 = QtGui.QFrame(self.frame_data_content)
-        self.frame_data_content2.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_data_content2.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame_data_content2.setObjectName(_fromUtf8("frame_data_content2"))
+        self.stylePanel(self.frame_data_content2, QtGui.QFrame.StyledPanel, QtGui.QFrame.Raised, "frame_data_content2")
+
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.frame_data_content2)
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setMargin(0)
@@ -141,12 +128,7 @@ class Ui_Form(QtGui.QFrame):
         self.tab_untrouble_dns.setObjectName(_fromUtf8("tab_untrouble_dns"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.tab_untrouble_dns)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-
-
         self.frame_dns_info = dnsWidget(self.tab_untrouble_dns)
-        #self.frame_dns_info.setFrameShape(QtGui.QFrame.StyledPanel)
-        #self.frame_dns_info.setFrameShadow(QtGui.QFrame.Plain)
-        #self.frame_dns_info.setObjectName(_fromUtf8("frame_dns_info"))
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.frame_dns_info)
         self.horizontalLayout_7.setMargin(0)
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
@@ -283,14 +265,8 @@ class Ui_Form(QtGui.QFrame):
         self.tabWidget_browser.setCurrentIndex(0)
         
         ''' Events '''
-        #self.QWebView_billing.loadFinished.connect(self.login)
         QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL(_fromUtf8("urlChanged(QUrl)")), self.setBillingUrlBar)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        
-
-        #QtCore.QObject.connect(self.lineEdit_console, QtCore.SIGNAL("returnPressed()"), self.dashLogin)
-        #QtCore.QObject.connect(self.QWebView_billing, QtCore.SIGNAL("loadFinished()"),self.login)
-
 
 
     def retranslateUi(self, Form):
@@ -312,45 +288,33 @@ class Ui_Form(QtGui.QFrame):
         self.label_browser_data.setText(_translate("Form", "Info", None))
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_browser), _translate("Form", "Browser", None))
         self.frame_data_tabs.setTabText(self.frame_data_tabs.indexOf(self.tab_console), _translate("Form", "Console", None))
-    '''
-    def login(self):
-        QtCore.QTimer.singleShot(2000, self.loginTrue)
 
+    def styleRaised(self, widget, name):
+        widget.setFrameShape(QtGui.QFrame.Panel)
+        widget.setFrameShadow(QtGui.QFrame.Raised)
+        widget.setObjectName(_fromUtf8(name))
         
-    def loginTrue(self):
-        if self.loggedIn:
-            return
-        self.QWebView_billing.page().mainFrame().evaluateJavaScript("formfield.username.value='"+self.loginCreds[0]+"';formfield.password.value='"+self.loginCreds[1]+"';formfield.submit()")
+    def stylePanel(self, widget, shape, shadow, name):
+        widget.setFrameShape(shape)
+        widget.setFrameShadow(shadow)        
+        widget.setObjectName(_fromUtf8(name))
         
-        self.loggedIn = True
-
-    def setBilling(self,url):
-        if "login" in str(self.QWebView_billing.url()):
-            self.loggedIn = False
-            self.loginTrue()
-            return
-        if url != str(self.QWebView_billing.url()):
-            print url
-            print str(self.QWebView_billing.url())
-            self.QWebView_billing.setUrl(QtCore.QUrl(url))
-    
-    def getBilling(self):
-        url = str(self.QWebView_billing.url())
-        return url
-    
-    def runConsoleCommand(self):
-        cmd = self.lineEdit.text()
-        self.lineEdit.clear()
-        self.lineEdit.update()
-        self.textBrowser.append("$ "+cmd)
-        resp = self.chatshell.runCommand(str(cmd))
-        self.textBrowser.append(resp)
-'''       
+    def styleEdges(self, name, layout, spacing=False, margin=False):
+        if spacing:
+            layout.setSpacing(spacing)
+        if margin:
+            layout.setMargin(margin)
+        layout.setObjectName(_fromUtf8(name))
+        
+    def styleSizing(self, object, hmin=0, hmax=16777215, wmin=0, wmax=16777215):
+        max = QtCore.QSize(wmax,hmax)
+        min = QtCore.QSize(wmin,hmin)
+        object.setMinimumSize(min)
+        object.setMaximumSize(max)        
+        
     def setBillingUrlBar(self, url):
-        print "billingUrl bar set to "+str(url)
         self.lineEdit_billing_search.setText(url.toString())
 
     def setBrowserUrlBar(self, url):
-        print "browserUrl bar set to "+str(url)
         self.lineEdit_browser.setText(url.toString())
         

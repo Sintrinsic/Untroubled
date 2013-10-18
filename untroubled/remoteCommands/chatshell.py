@@ -8,18 +8,15 @@ from time import sleep
 
 
 class chatshell(object):
-    '''
-    classdocs
-    '''
-
 
     def __init__(self):
         '''
         Constructor
-        
+        self.loginCreds = open("../login").read().split(" ")
+
         self.__connection = SSHClient()
         self.__connection.set_missing_host_key_policy(AutoAddPolicy())
-        self.__connection.connect("wizard2", username="bdupree", password="Bgd938784", look_for_keys=True)
+        self.__connection.connect("wizard2", username=self.loginCreds[0], password=self.loginCreds[1], look_for_keys=True)
         self.shell = self.__connection.invoke_shell()
         self.cmd("clear")
         '''

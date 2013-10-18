@@ -11,7 +11,6 @@ class billingAccount(QtCore.QObject):
     Gets the owner name, primary email, account status
     '''
 
-
     def __init__(self, url, document):
         super(billingAccount,self).__init__()
         self.url = url
@@ -27,7 +26,6 @@ class billingAccount(QtCore.QObject):
         self.page.evaluateJavaScript("pb = $('#contact_info div[id$=div]').html();billingAccount.getElements(pb)")        
         if not self.htmlCached:
             QtCore.QTimer.singleShot(1000, self.cacheHtml)
-
     
     @QtCore.pyqtSlot(str)        
     def getElements(self, documentBody):
