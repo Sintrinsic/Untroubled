@@ -1,4 +1,3 @@
-#Mon Oct 14 08:08:01 CDT 2013
 eclipse.preferences.version=1
 encoding//untroubled/MainFrame.py=utf-8
 encoding//untroubled/archive/dnsAutomater.py=utf-8
@@ -8,5 +7,6 @@ encoding//untroubled/archive/old/gui.py=utf-8
 encoding//untroubled/archive/old/gui3.py=utf-8
 encoding//untroubled/billing/packageWidget.py=utf-8
 encoding//untroubled/chatSession/dataWidget.py=utf-8
+encoding//untroubled/qtwidgets/browserWidget.py=utf-8
 encoding//untroubled/qtwidgets/dnsWidget.py=utf-8
 encoding//untroubled/qtwidgets/packageWidget.py=utf-8

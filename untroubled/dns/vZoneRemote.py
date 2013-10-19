@@ -73,24 +73,14 @@ class vZoneRemote(object):
     def getDomainIP(self,domain):
         targetDomain = re.sub("[\s\.]+$","", domain)
         rootDomain = ".".join(targetDomain.split(".")[-1:])
-        ip = " "
-        if rootDomain in self.text:
-            subPattern = re.compile(self.getSubPatternString(targetDomain))
-            for r in self.rawRecords:
-                if subPattern.match(r[0]) and (r[2] == "A" or r[2] == "CNAME"):
-                    if r not in self.keyRecords:
-                        self.typedRecords["Related"].append(r)
-                        self.keyRecords.append(r)
-                    ip += r[3]+" "
-        else:
-            ip = " "+self.ping(targetDomain)+" "
+        ip = " "+self.ping(targetDomain)+" "
         return ip
         
         
     #Generates a regex trying that matches all possible variants that the target domain could be labeled as (example: mail or mail.domain.com)
     def getSubPatternString(self,domain):
-        subDomain = re.sub(self.text,"",domain)[:-1]
-        return '^('+self.domain+('|'+subDomain if subDomain else '')+')(\.)?'
+        subDomain = re.sub(self.domain,"",domain)[:-1]
+        return '^('+domain+('|'+subDomain if subDomain else '')+')(\.)?'
     
     
     def printRecords(self):

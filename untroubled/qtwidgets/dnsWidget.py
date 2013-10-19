@@ -9,7 +9,7 @@
 
 from PyQt4 import QtCore, QtGui
 from untroubled.remoteCommands.cmdExecutor import cmdExecutor 
-from untroubled.dns import vZoneLocal, vZoneRemote
+from untroubled.dns import vZoneLocal, vZoneRemote, dnsManager
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -25,10 +25,10 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_dnsWidget(QtGui.QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,cmdExecutor):
         super(Ui_dnsWidget,self).__init__(parent)
         self.setupUi(self)
-        self.cmdExecutor = cmdExecutor("bob")
+        self.cmdExecutor = cmdExecutor
     
     def setupUi(self, dnsWidget):
         dnsWidget.setObjectName(_fromUtf8("dnsWidget"))
@@ -51,7 +51,6 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.combo_selection.setAutoFillBackground(True)
         self.combo_selection.setStyleSheet(_fromUtf8("background-color:white"))
         self.combo_selection.setEditable(True)
-        self.combo_selection.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.combo_selection.setObjectName(_fromUtf8("combo_selection"))
         self.layoutH_selection.addWidget(self.combo_selection)
         self.layoutV_dns.addWidget(self.frame_selection)
@@ -154,6 +153,7 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.textb_output.setObjectName(_fromUtf8("textb_output"))
         self.layoutV_output.addWidget(self.textb_output)
         self.layoutV_dns.addWidget(self.frame_output)
+        self.combo_selection.currentIndexChanged.connect(self.doDNS)
         #QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("currentIndexChanged(int)"),self.doDNS)
 
         self.retranslateUi(dnsWidget)
@@ -170,14 +170,12 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.tabs_remote.setTabText(self.tabs_remote.indexOf(self.tab_remoteStructured), _translate("dnsWidget", "Structured", None))
         self.tabs_remote.setTabText(self.tabs_remote.indexOf(self.tab_remoteRaw), _translate("dnsWidget", "Raw", None))
 
-    def doDNS(self,int):
+    def doDNS(self,string):
         domain = str(self.combo_selection.currentText())
-        
-        vzR = vZoneRemote.vZoneRemote(domain)
-        vzL = vZoneLocal.vZoneLocal(open("dns/zt1").read(),domain,self.cmdExecutor)
-        self.table_localStructured.ins
-        self.textb_localRaw.setText(vzL.printRecords())
-        self.tabs_local.setTabEnabled(1)
-        self.textb_remoteRaw.setText(vzR.printRecords())
-        self.tabs_remote.setTabEnabled(1)
+        print "selected domain: "+domain
+        dns = dnsManager.dnsManager(domain, self.cmdExecutor)
+        self.textb_localRaw.setText(dns.localZone.text)
+        self.tabs_local.setTabEnabled(1, True)
+        self.textb_remoteRaw.setText(dns.remoteZone.text)
+        self.tabs_remote.setTabEnabled(1, True)
         

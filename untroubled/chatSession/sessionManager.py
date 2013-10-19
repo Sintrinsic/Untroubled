@@ -72,8 +72,8 @@ class sessionManager(object):
         billing = addArray[2]
         startTime = addArray[3]
         newIndex = len(self.list)
-        
-        chatFrame = dataFrame(self.dataFrame)
+        cmdExec = cmdExecutor(chatshell())
+        chatFrame = dataFrame(self.dataFrame, cmdExec)
         nameItem = ChatSession(name,chatFrame,cmdExecutor(chatshell()))
         chatFrame.setVisible(False)
         self.layout.addWidget(chatFrame)

@@ -8,7 +8,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-
+from PyQt4.QtWebKit import QWebView
+from PyQt4 import QtWebKit
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -23,7 +24,11 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_mainWidget(object):
+class Ui_mainWidget(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(Ui_mainWidget,self).__init__(parent)
+        self.setupUi(self)
+    
     def setupUi(self, mainWidget):
         mainWidget.setObjectName(_fromUtf8("mainWidget"))
         mainWidget.resize(956, 707)
@@ -50,13 +55,13 @@ class Ui_mainWidget(object):
         self.layout_nav.setObjectName(_fromUtf8("layout_nav"))
         self.navBack_button = QtGui.QToolButton(self.navFrame)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Downloads/backward.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/backward.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.navBack_button.setIcon(icon)
         self.navBack_button.setObjectName(_fromUtf8("navBack_button"))
         self.layout_nav.addWidget(self.navBack_button)
         self.navForward_button = QtGui.QToolButton(self.navFrame)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Downloads/forward.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/forward.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.navForward_button.setIcon(icon1)
         self.navForward_button.setObjectName(_fromUtf8("navForward_button"))
         self.layout_nav.addWidget(self.navForward_button)
@@ -65,7 +70,7 @@ class Ui_mainWidget(object):
         self.layout_nav.addWidget(self.navUrl_textEdit)
         self.navReload_button = QtGui.QToolButton(self.navFrame)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Downloads/refresh.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/refresh.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.navReload_button.setIcon(icon2)
         self.navReload_button.setIconSize(QtCore.QSize(16, 16))
         self.navReload_button.setObjectName(_fromUtf8("navReload_button"))
@@ -77,7 +82,7 @@ class Ui_mainWidget(object):
         self.searchType_combo.setIconSize(QtCore.QSize(14, 18))
         self.searchType_combo.setObjectName(_fromUtf8("searchType_combo"))
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Downloads/google.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/google.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.searchType_combo.addItem(icon3, _fromUtf8(""))
         self.searchType_combo.setItemText(0, _fromUtf8(""))
         self.layout_nav.addWidget(self.searchType_combo)
@@ -128,14 +133,15 @@ class Ui_mainWidget(object):
         self.layout_tab1.setSpacing(0)
         self.layout_tab1.setContentsMargins(0, 0, 4, 0)
         self.layout_tab1.setObjectName(_fromUtf8("layout_tab1"))
-        self.tab1_webView = KWebView(self.tab1)
+        self.tab1_webView = QWebView(self.tab1)
+        self.tab1_webView.setUrl(QtCore.QUrl(QtCore.QString("http://google.com")))
         self.tab1_webView.setObjectName(_fromUtf8("tab1_webView"))
         self.layout_tab1.addWidget(self.tab1_webView)
         self.tabWidget.addTab(self.tab1, _fromUtf8(""))
         self.tabs_addNew = QtGui.QWidget()
         self.tabs_addNew.setObjectName(_fromUtf8("tabs_addNew"))
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Downloads/add.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/add.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabs_addNew, icon4, _fromUtf8(""))
         self.layout_tabsFrame.addWidget(self.tabWidget)
         self.tabsStatus_frame = QtGui.QFrame(self.tabsFrame)
@@ -156,7 +162,7 @@ class Ui_mainWidget(object):
         self.layout_main.addWidget(self.mainFrame)
 
         self.retranslateUi(mainWidget)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(mainWidget)
 
     def retranslateUi(self, mainWidget):
@@ -168,4 +174,3 @@ class Ui_mainWidget(object):
         self.tabsStatusLeft.setText(_translate("mainWidget", "TextLabel", None))
         self.tabsStatusRight.setText(_translate("mainWidget", "TextLabel", None))
 
-from kwebview import KWebView

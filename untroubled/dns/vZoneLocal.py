@@ -24,7 +24,7 @@ class vZoneLocal(object):
         
         self.errors = []
         
-        self.text = self.commandExecutor("./viewzone "+domain)
+        self.text = self.commandExecutor.runCommand("viewzone "+domain)
         self.rawRecords = self.parseText(self.text)
         self.decode(self.rawRecords)
         self.printRecords()
@@ -44,7 +44,7 @@ class vZoneLocal(object):
         nsName = re.compile(r'(?:^; Zone file for ).*?(?:\n)',re.MULTILINE)
         zoneFile = nsName.findall(text)
         if len(zoneFile)>0:
-            self.text = re.sub("; Zone file for ","",str(text[0])).rstrip()
+            self.zonePrimary = re.sub("; Zone file for ","",str(text[0])).rstrip()
         return chunks
             
     def decode(self, records):
@@ -116,8 +116,8 @@ class vZoneLocal(object):
         
     #Generates a regex string that matches all possible variants that the target domain could be labeled as (example: mail or mail.domain.com)
     def getSubPatternString(self,domain):
-        subDomain = re.sub(self.text,"",domain)[:-1]
-        return '^('+self.domain+('|'+subDomain if subDomain else '')+')(\.)?'
+        subDomain = re.sub(self.zonePrimary,"",domain)[:-1]
+        return '^('+domain+('|'+subDomain if subDomain else '')+')(\.)?'
     
     
     def printRecords(self):
