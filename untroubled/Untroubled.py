@@ -12,9 +12,7 @@ from untroubled.chatSession import dataWidget
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     unt = QtGui.QMainWindow()
-    cs = chatshell()
-    cp =  cmdExecutor(cs)
-    gui = MainFrame.Ui_MainWindow(cp,unt)
+    gui = MainFrame.Ui_MainWindow(unt)
     gui.setupUi(unt)
     unt.show()
     

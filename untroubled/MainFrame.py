@@ -25,9 +25,8 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(QtCore.QObject):
-    def __init__(self, chatshell,MainWindow):
+    def __init__(self,MainWindow):
         super(Ui_MainWindow,self).__init__(MainWindow)
-        self.chatshell = chatshell
         self.activeClient = ""  
         self.clientListView = ""  
         self.clients = {}     

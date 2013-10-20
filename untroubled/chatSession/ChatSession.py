@@ -61,7 +61,7 @@ class ChatSession(QtGui.QStandardItem):
                 return True
             self.billingBrowser.page().mainFrame().evaluateJavaScript("formfield.username.value='"+self.loginCreds[0]+"';formfield.password.value='"+self.loginCreds[1]+"';formfield.submit()")
             self.loggedInStatus = 1 
-            QtCore.QTimer.singleShot(2000, self.billingLogin)
+            QtCore.QTimer.singleShot(3000, self.billingLogin)
             print "Trying login for "+str(self)
             return False
         self.runUrlQueue()

@@ -32,8 +32,8 @@ class sessionManager(object):
         
         self.manualList = numpy.ndarray((1,6),dtype=object)
         self.manualList = numpy.delete(numpy.ndarray((1,6),dtype=object),0,0)
-        self.addSession([0,"Misc","http://google.com","1234567"],True)
-        self.addSession([1,"Misc1","http://google.com","1234567"],True)
+        self.addSession([0,"FakeChad","https://gbadmin.hostgator.com/client/1189034","1234567"],True)
+        self.addSession([1,"Feofake Hamad","https://gbadmin.hostgator.com/client/1881256","1234567"],True)
 
 
         self.selectSession(0)
