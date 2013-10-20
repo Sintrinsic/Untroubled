@@ -29,6 +29,7 @@ class Ui_dnsWidget(QtGui.QWidget):
         super(Ui_dnsWidget,self).__init__(parent)
         self.setupUi(self)
         self.cmdExecutor = cmdExecutor
+        self.domains = {}
     
     def setupUi(self, dnsWidget):
         dnsWidget.setObjectName(_fromUtf8("dnsWidget"))
@@ -80,10 +81,11 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.layoutH_localStructured.setSpacing(0)
         self.layoutH_localStructured.setMargin(0)
         self.layoutH_localStructured.setObjectName(_fromUtf8("layoutH_localStructured"))
-        self.table_localStructured = QtGui.QTableWidget(self.tab_localStructured)
+        self.table_localStructured = QtGui.QTreeWidget(self.tab_localStructured)
+        self.table_localStructured.setDragEnabled(True)
+        self.table_localStructured.setDragDropMode(QtGui.QAbstractItemView.DragOnly)
+        self.table_localStructured.setHeaderHidden(True)
         self.table_localStructured.setObjectName(_fromUtf8("table_localStructured"))
-        self.table_localStructured.setColumnCount(0)
-        self.table_localStructured.setRowCount(0)
         self.layoutH_localStructured.addWidget(self.table_localStructured)
         self.tabs_local.addTab(self.tab_localStructured, _fromUtf8(""))
         self.tab_localRaw = QtGui.QWidget()
@@ -113,10 +115,11 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.layoutH_remoteStructured.setSpacing(0)
         self.layoutH_remoteStructured.setMargin(0)
         self.layoutH_remoteStructured.setObjectName(_fromUtf8("layoutH_remoteStructured"))
-        self.table_remoteStructured = QtGui.QTableWidget(self.tab_remoteStructured)
+        self.table_remoteStructured = QtGui.QTreeWidget(self.tab_remoteStructured)
+        self.table_remoteStructured.setDragEnabled(True)
+        self.table_remoteStructured.setDragDropMode(QtGui.QAbstractItemView.DragOnly)
+        self.table_remoteStructured.setHeaderHidden(True)
         self.table_remoteStructured.setObjectName(_fromUtf8("table_remoteStructured"))
-        self.table_remoteStructured.setColumnCount(0)
-        self.table_remoteStructured.setRowCount(0)
         self.layoutH_remoteStructured.addWidget(self.table_remoteStructured)
         self.tabs_remote.addTab(self.tab_remoteStructured, _fromUtf8(""))
         self.tab_remoteRaw = QtGui.QWidget()
@@ -173,7 +176,31 @@ class Ui_dnsWidget(QtGui.QWidget):
     def doDNS(self,string):
         domain = str(self.combo_selection.currentText())
         print "selected domain: "+domain
-        dns = dnsManager.dnsManager(domain, self.cmdExecutor)
+        if domain in self.domains.keys():
+            dns = self.domains[domain]
+        else:
+            dns = dnsManager.dnsManager(domain, self.cmdExecutor)
+            self.domains[domain] = dns
+        
+        #remote
+        for key in dns.remoteZone.typedRecords:
+            rootItem = QtGui.QTreeWidgetItem(QtCore.QStringList(QtCore.QString(key)))
+            self.table_remoteStructured.addTopLevelItem(rootItem)
+            for child in dns.remoteZone.typedRecords[key]:
+                record = ' '.join(child)
+                childItem = QtGui.QTreeWidgetItem(QtCore.QStringList(QtCore.QString(record)))
+                rootItem.addChild(childItem)
+        
+        #remote
+        for key in dns.localZone.typedRecords:
+            rootItem = QtGui.QTreeWidgetItem(QtCore.QStringList(QtCore.QString(key)))
+            self.table_localStructured.addTopLevelItem(rootItem) 
+            for child in dns.localZone.typedRecords[key]:
+                record = ' '.join(child)
+                childItem = QtGui.QTreeWidgetItem(QtCore.QStringList(QtCore.QString(record)))
+                rootItem.addChild(childItem)
+              
+                 
         self.textb_localRaw.setText(dns.localZone.text)
         self.tabs_local.setTabEnabled(1, True)
         self.textb_remoteRaw.setText(dns.remoteZone.text)

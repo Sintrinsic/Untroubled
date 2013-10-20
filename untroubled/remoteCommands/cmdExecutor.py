@@ -68,12 +68,12 @@ class cmdExecutor(object):
         #print finalString
         return finalString
                         
-    def getCmdElements(self, cmdStr, closing):
+    def getCmdElements(self, cmdStro, closing):
         '''
         Splits an individual command into it's elements (separated by spaces), then tests if the first is a chatshell command. 
         If it is a chatshell command, its chatshell output is put into string and converted to echo, then a pure-bash command list is returned. 
         '''
-        cmdStr = shlex.split(cmdStr)
+        cmdStr = shlex.split(cmdStro)
         type = "term"
         if cmdStr[0] in self.cmds:
             type = "chatshell"

@@ -24,7 +24,7 @@ class vZoneLocal(object):
         
         self.errors = []
         
-        self.text = self.commandExecutor.runCommand("viewzone "+domain)
+        self.text = self.commandExecutor.runCommand("viewzone "+domain+" "+server)
         self.rawRecords = self.parseText(self.text)
         self.decode(self.rawRecords)
         self.printRecords()

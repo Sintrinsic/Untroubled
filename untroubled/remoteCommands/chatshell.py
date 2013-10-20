@@ -17,7 +17,7 @@ class chatshell(object):
         self.shell = self.__connection.invoke_shell()
         self.shell.combine_stderr = True
         self.shell.setblocking(1)
-        self.timeout = 1
+        self.timeout = 3
         self.prompt = fix_text(unicode(self.getPrompt()))
         self.promptPattern = re.compile("^"+re.escape(self.prompt)+"$", re.MULTILINE)
         
