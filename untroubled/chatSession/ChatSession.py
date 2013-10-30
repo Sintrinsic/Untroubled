@@ -5,9 +5,9 @@ Created on Oct 12, 2013
 '''
 from PyQt4 import QtCore, QtGui
 from untroubled.billing.billingAccount import billingAccount
+from untroubled.qtwidgets.sessionLabel import sessionLabel
 
-
-class ChatSession(QtGui.QStandardItem):
+class ChatSession(object):
     '''
     Container for all the key components of a chat:
     Contains the main dataWidget for the chat, and exposes methods to unify/control/automate its features. 
@@ -15,11 +15,15 @@ class ChatSession(QtGui.QStandardItem):
     '''
 
 
-    def __init__(self, name, dataWidget,  cmdExecutor):
-        super(ChatSession,self).__init__(QtCore.QString(name))
-        self.dataWidget = dataWidget #main data frame for this specific chat.        
-        self.billingBrowser = dataWidget.QWebView_billing
+    def __init__(self, name, label, dataWidget,  cmdExecutor):
+        self.name =   name
+        self.label = label
+        self.dataWidget = dataWidget #main data frame for this specific chat.  
         self.cmdExecutor = cmdExecutor
+        '''      
+        self.billingBrowser = dataWidget.QWebView_billing
+        self.billingBrowser.urlChanged.connect(self.billingLogin)
+        '''
         self.billingPages = {} #List of billingAccount objects for this chat session [selectedBool,verifiedBool,email, url, object]
         #Message timers to calculate wait times/colors
         self.billingAccounts = {}
@@ -27,7 +31,6 @@ class ChatSession(QtGui.QStandardItem):
         self.lastMsgAdmin = 0
         self.loggedInStatus = 0
         self.loginCreds = open("../login").read().split(" ")
-        self.billingBrowser.urlChanged.connect(self.billingLogin)
         self.queuedUrl = False
         
 
@@ -86,6 +89,9 @@ class ChatSession(QtGui.QStandardItem):
     def populateBilling(self):
         if self.queuedUrl and not self.billingAccounts.has_key(self.queuedUrl):
             self.billingAccounts[self.queuedUrl] = billingAccount(self.queuedUrl,self.billingBrowser.page().mainFrame())
+            
+    def setVisible(self, visible):
+        self.dataWidget.setVisible(False)
             
 
 

@@ -4,7 +4,9 @@ Created on Sep 29, 2013
 @author: bdupree
 '''
 import shlex, commands
-
+import thread
+from untroubled.event import commandEvent
+from untroubled.event.EventManager import EventManager
 
 class cmdExecutor(object):
     '''
@@ -14,17 +16,27 @@ class cmdExecutor(object):
     Note: removing all entries from untroubled.remoteCommands.commandlist makes all commands go to the local terminal. 
     '''
 
-    def __init__(self,chatShell):
+    def __init__(self,chatShell,eventHandler):
+        self.eventHandler = eventHandler
         self.breakers = ["|",";",">"]
         cmdstr = open('remoteCommands/commandList').read()
         self.cmds = cmdstr.split("\n")
         self.chatshell = chatShell
         
-    def runCommand(self, cmdStr):
+    def runCommand(self, cmdStr): ## --------- DEPRICATED. phasing out  ----------
         bashCommand = self.parseCommands(cmdStr)
         #cmdArray = shlex.split(bashCommand)
         output = commands.getoutput(bashCommand)
         return output
+    
+    def runCommandAsync(self, cmdStr, identifier):
+        thread.start_new_thread(self.__asyncCmdEventCaller, (cmdStr, identifier))
+        
+    def __asyncCmdEventCaller(self, cmdStr, identifier):
+        resp = self.runCommand(cmdStr)
+        event = commandEvent(identifier, cmdStr, resp)
+        self.eventHandler.call("cmdEvent", event)
+        
     
     def parseCommands(self, cmdStr):
         '''

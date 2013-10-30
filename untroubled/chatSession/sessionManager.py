@@ -7,25 +7,27 @@ import numpy
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtGui import QStandardItemModel, QStandardItem
 from PyQt4.QtCore import QObject
-from untroubled.chatSession.dataWidget import Ui_Form as dataFrame
 from untroubled.remoteCommands.cmdExecutor import cmdExecutor
 from untroubled.remoteCommands.chatshell import chatshell
+from untroubled.qtwidgets.sessionLabel import sessionLabel
 
 from untroubled.chatSession.ChatSession import ChatSession
 
 
 class sessionManager(object):
 
-
-    def __init__(self,targetFrame,targetLayout,targetListView,dashboard):
+    def __init__(self,eventHandler,targetFrame,targetLayout,targetList,dashboard):
         self.dashboard = dashboard
         self.layout = targetLayout
         self.dataFrame = targetFrame
-        self.listView = targetListView
+        self.listFrame = targetList
+        self.eventHandler = eventHandler
+        '''
+        self.listView = targetList
         self.listSelector = self.listView.selectionModel()
         self.listModel = QStandardItemModel(self.listView)
         self.listView.setModel(self.listModel)
-        QObject.connect(self.listView.selectionModel(), QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),self.selectionChanged)
+        '''
         #self.listView.selectionChanged.connect(self.selectionChanged())
         #self.list: [chatId, name,billing,starttime,dataFrameWidget,QListViewIndex]
         self.list = numpy.delete(numpy.ndarray((1,6),dtype=object),0,0)
@@ -35,9 +37,7 @@ class sessionManager(object):
         self.addSession([0,"FakeChad","https://gbadmin.hostgator.com/client/1189034","1234567"],True)
         self.addSession([1,"Feofake Hamad","https://gbadmin.hostgator.com/client/1881256","1234567"],True)
 
-
         self.selectSession(0)
-
 
         
     def assessChats(self, current):
@@ -69,16 +69,17 @@ class sessionManager(object):
         #[id,name,billingURL,starTime]
         chatId = addArray[0]
         name = addArray[1]
+        label = sessionLabel(name, self.listFrame)
         billing = addArray[2]
         startTime = addArray[3]
         newIndex = len(self.list)
-        cmdExec = cmdExecutor(chatshell())
-        chatFrame = dataFrame(self.dataFrame, cmdExec)
-        nameItem = ChatSession(name,chatFrame,cmdExecutor(chatshell()))
-        chatFrame.setVisible(False)
+        cmdExec = cmdExecutor(chatshell(),self.eventHandler)
+        chatFrame = QtGui.QWidget(self.dataFrame)
+        session = ChatSession(name,label, chatFrame,cmdExec)
         self.layout.addWidget(chatFrame)
+        chatFrame.setVisible(False)
 
-        chatList = [chatId,nameItem,billing ,startTime, chatFrame,newIndex]
+        chatList = [chatId,session,billing ,startTime, chatFrame,newIndex]
         if manual:
             self.manualList = numpy.append(self.manualList,[chatList],axis=0)
 
@@ -86,7 +87,7 @@ class sessionManager(object):
         #if ( [None]*6 in self.list):
 
         print newIndex
-        self.listModel.insertRow(newIndex, nameItem)
+        #self.listModel.insertRow(newIndex, session)
         
     def removeSession(self,toRemove):
         print "Begin"

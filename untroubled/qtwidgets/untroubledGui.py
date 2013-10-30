@@ -7,7 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui,  QtWebKit
+from untroubled.chatSession.sessionManager import sessionManager
+from untroubled.event.EventManager import EventManager
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -78,18 +80,18 @@ class untroubledGui(QtGui.QWidget):
         self.logo_label.setStyleSheet(_fromUtf8("background-color:none;font-size:14pt;"))
         self.logo_label.setText(_fromUtf8(""))
         self.logo_label.setTextFormat(QtCore.Qt.RichText)
-        self.logo_label.setPixmap(QtGui.QPixmap(_fromUtf8("../../../Pictures/unt-logo-3dslt.png")))
+        self.logo_label.setPixmap(QtGui.QPixmap(_fromUtf8("../resources/unt-logo-3dslt.png")))
         self.logo_label.setScaledContents(False)
         self.logo_label.setAlignment(QtCore.Qt.AlignCenter)
         self.logo_label.setMargin(0)
         self.logo_label.setObjectName(_fromUtf8("logo_label"))
         self.layout_sessions_main.addWidget(self.sessions_logo_frame)
-        self.pushButton_2 = QtGui.QPushButton(self.sessions_main_frame)
-        self.pushButton_2.setMinimumSize(QtCore.QSize(0, 30))
-        self.pushButton_2.setStyleSheet(_fromUtf8("background-color:rgb(150, 150, 150)"))
-        self.pushButton_2.setFlat(False)
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.layout_sessions_main.addWidget(self.pushButton_2)
+        self.sessions_add_button = QtGui.QPushButton(self.sessions_main_frame)
+        self.sessions_add_button.setMinimumSize(QtCore.QSize(0, 30))
+        self.sessions_add_button.setStyleSheet(_fromUtf8("background-color:rgb(150, 150, 150)"))
+        self.sessions_add_button.setFlat(False)
+        self.sessions_add_button.setObjectName(_fromUtf8("sessions_add_button"))
+        self.layout_sessions_main.addWidget(self.sessions_add_button)
         self.sessions_hline = QtGui.QFrame(self.sessions_main_frame)
         self.sessions_hline.setMinimumSize(QtCore.QSize(20, 10))
         self.sessions_hline.setFrameShape(QtGui.QFrame.HLine)
@@ -219,17 +221,20 @@ class untroubledGui(QtGui.QWidget):
         self.dataframe_body_frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.dataframe_body_frame.setFrameShadow(QtGui.QFrame.Plain)
         self.dataframe_body_frame.setObjectName(_fromUtf8("dataframe_body_frame"))
+        #self.dataframe_body_frame.setStyle("background-image:../resources/unt-logo-3dlds1.png")
         self.layout_dataframe_body = QtGui.QHBoxLayout(self.dataframe_body_frame)
         self.layout_dataframe_body.setSpacing(0)
         self.layout_dataframe_body.setMargin(0)
         self.layout_dataframe_body.setObjectName(_fromUtf8("layout_dataframe_body"))
+        '''
         self.dataframe_body_placeholder_label = QtGui.QLabel(self.dataframe_body_frame)
         self.dataframe_body_placeholder_label.setMinimumSize(QtCore.QSize(300, 300))
         self.dataframe_body_placeholder_label.setMaximumSize(QtCore.QSize(300, 300))
         self.dataframe_body_placeholder_label.setText(_fromUtf8(""))
-        self.dataframe_body_placeholder_label.setPixmap(QtGui.QPixmap(_fromUtf8("../../../Pictures/unt-logo-3dlds1.png")))
+        self.dataframe_body_placeholder_label.setPixmap(QtGui.QPixmap(_fromUtf8("../resources/unt-logo-3dlds1.png")))
         self.dataframe_body_placeholder_label.setObjectName(_fromUtf8("dataframe_body_placeholder_label"))
         self.layout_dataframe_body.addWidget(self.dataframe_body_placeholder_label)
+        '''
         self.layout_dataframe_main.addWidget(self.dataframe_body_frame)
         self.layout_content.addWidget(self.dataframe_frame_main)
         self.layout_main.addWidget(self.content_frame)
@@ -254,14 +259,75 @@ class untroubledGui(QtGui.QWidget):
 
         self.retranslateUi(untroubled)
         QtCore.QMetaObject.connectSlotsByName(untroubled)
+        
+        
+        self.dashboard = QtWebKit.QWebView(self.status_frame)
+        #self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
+        self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
+        self.dashboard.setObjectName(_fromUtf8("dashboard"))
+        self.dashboard.resize(QtCore.QSize(1,1))  
+        self.eventManager = EventManager()
+        self.chats = sessionManager(self.eventManager, self.dataframe_body_frame,self.layout_dataframe_body,self.sessions_container_frame,self.dashboard)
+
+        QtCore.QObject.connect(self.sessions_add_button, QtCore.SIGNAL("clicked()"), self.addSession)
+        
+        
+        '''        
+        self.dashboard.loadFinished.connect(self.dbLogin)
+        self.chats = sessionManager.sessionManager(self.frame,self.horizontalLayout,self.listView,self.dashboard)
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), self.startCheck)
+        '''
+
 
     def retranslateUi(self, untroubled):
         untroubled.setWindowTitle(_translate("untroubled", "Form", None))
-        self.pushButton_2.setText(_translate("untroubled", "Add New", None))
+        self.sessions_add_button.setText(_translate("untroubled", "Add New", None))
         self.label.setText(_translate("untroubled", "Selected Tool", None))
         self.dataFrame_nav_billing_toolbutton.setText(_translate("untroubled", "Billing", None))
         self.dataframe_nav_browser_button.setText(_translate("untroubled", "Browser", None))
         self.dataframe_nav_console_button.setText(_translate("untroubled", "Console", None))
         self.dataframe_nav_login_button.setText(_translate("untroubled", "Log in", None))
         self.status_label.setText(_translate("untroubled", "Status", None))
+        
+    def addSession(self):
+        pass
 
+    '''    
+    def dbLogin(self,success):
+        QtCore.QTimer.singleShot(2000, self.dbLoginTrue)
+        print "login fired"
+        self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
+        #self.dashboard.page().mainFrame().evaluateJavaScript("function check(){unt.chatCallback('hello');setTimeout(function(){check()},2000)}")
+        #self.dashboard.page().mainFrame().evaluateJavaScript("check();") 
+    
+    def dbLoginTrue(self):
+        print "logintrue fired"
+        self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
+        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('"+self.login[0]+"','"+self.login[1]+"')")        
+        
+        QtCore.QTimer.singleShot(2000, self.startCheck)
+
+
+    def startCheck(self):    
+        print "Updating Chats"    
+        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){if(DashboardChatWidgets.chats[chat].clientId > 1){DashboardChatWidgets.chats[chat].billingUrl="https://gbadmin.hostgator.com/client/"+DashboardChatWidgets.chats[chat].clientId};cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
+        self.dashboard.page().mainFrame().evaluateJavaScript("unt.chatCallback(cList)")
+        QtCore.QTimer.singleShot(4000, self.startCheck)
+
+
+    def fakeCallback(self):
+        self.chatCallback("1245323,Brandon,http://google.com,12354|845823,Bob,http://google.com,12354|1123556,tom,http://google.com,12354")
+        
+    @QtCore.pyqtSlot(str)        
+    def chatCallback(self,chatList):
+
+        chatList = str(chatList)
+        cmds = chatList.split("|")
+        chats = []
+        for c in cmds:
+            if c:
+                eles = c.split(",")
+                chats.append(eles)
+        print "Calling assessChats on "+str(chats)
+        self.chats.assessChats(chats)
+    '''            

@@ -23,8 +23,13 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_sessionLabel(object):
-    def setupUi(self, sessionLabel):
+class sessionLabel(QtGui.QWidget):
+    def __init__(self, name, parent):
+        super(sessionLabel, self).__init__(parent)
+        self.setupUi(self,name)
+    
+    def setupUi(self, sessionLabel,name ):
+        self.nameString = name
         sessionLabel.setObjectName(_fromUtf8("sessionLabel"))
         sessionLabel.resize(255, 33)
         sessionLabel.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
@@ -44,17 +49,18 @@ class Ui_sessionLabel(object):
         self.close_button.setStyleSheet(_fromUtf8("color:red;"))
         self.close_button.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../Pictures/icon-close.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/icon-close.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.close_button.setIcon(icon)
         self.close_button.setFlat(True)
         self.close_button.setObjectName(_fromUtf8("close_button"))
         self.horizontalLayout.addWidget(self.close_button)
+        self.name.setText(QtCore.QString(self.nameString))
 
         self.retranslateUi(sessionLabel)
         QtCore.QMetaObject.connectSlotsByName(sessionLabel)
+        #self.mou
 
     def retranslateUi(self, sessionLabel):
         sessionLabel.setWindowTitle(_translate("sessionLabel", "Form", None))
-        self.name.setText(_translate("sessionLabel", "Fakechat 1", None))
         self.time.setText(_translate("sessionLabel", "2:10", None))
 

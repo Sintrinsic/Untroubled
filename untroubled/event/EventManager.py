@@ -6,19 +6,17 @@ Created on Oct 26, 2013
 import time
 from PyQt4 import QtCore, QtGui
 
-class eventManager(object):
+class EventManager(object):
     '''
     Handler for the registration and the distribution of events to registered listeners. 
     EventHandlers will be in format:
     def method(self, event)
     '''
 
-
     def __init__(self):
-        self.handlerList = {}
-        self.asyncQueue = []
+        self.handlerList = {}#{eventName:[listener,...],...}
+        self.asyncQueue = []#[[eventName, eventObject],...]
         self.locked = False
-        
         
     def register(self, eventName, callbackMethod):
         if not eventName in self.handlerList.keys():
