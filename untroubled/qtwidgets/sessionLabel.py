@@ -57,6 +57,7 @@ class sessionLabel(QtGui.QWidget):
         self.retranslateUi(sessionLabel)
         QtCore.QMetaObject.connectSlotsByName(sessionLabel)
         self.close_button.clicked.connect(self.closeSelf)
+        self.chatSession.eventHandler.register("chatEvent",self.selected)
 
     def retranslateUi(self, sessionLabel):
         sessionLabel.setWindowTitle(_translate("sessionLabel", "Form", None))
@@ -66,7 +67,14 @@ class sessionLabel(QtGui.QWidget):
         chatEvent = ChatEvent("manual_selected", self.chatSession.ID, "selected", self.chatSession)
         self.chatSession.eventHandler.call("chatEvent",chatEvent)
         
+    def selected(self, event):
+        
+        if event.eventType == "selected" and event.chatID == self.chatSession.ID:
+            self.setStyleSheet(_fromUtf8("background-color:rgb(180, 180, 180)"))
+        else:
+            self.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
 
+        
     def closeSelf(self):
         self.chatSession.remove()
         

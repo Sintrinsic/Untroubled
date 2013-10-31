@@ -15,11 +15,11 @@ class DashboardInterface(QtCore.QObject):
         self.db.loadFinished.connect(self.urlChanged)
         self.login =  open("../login").read().split(" ")
         self.loggedIn = False
-        self.testLogin()
                                
     def urlChanged(self):
         print "Dashboard url changed."
-        
+        self.testLogin()
+
         
     def injectLogon(self):
         self.db.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('"+self.login[0]+"','"+self.login[1]+"')")        

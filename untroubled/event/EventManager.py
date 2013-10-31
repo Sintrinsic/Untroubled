@@ -44,7 +44,7 @@ class EventManager(object):
                 self.__call(e[0], e[1])
             self.asyncQueue = []
             self.locked = False
-        QtCore.QTimer.singleShot(1000,self.runQueue)
+        QtCore.QTimer.singleShot(200,self.runQueue)
 
         
     def __call(self, eventName, event):

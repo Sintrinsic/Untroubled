@@ -8,17 +8,21 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 
 class BillingBrowser(QtWebKit.QWebView):
 
-    def __init__(self, parent=None):
+    def __init__(self, chatSession, parent=None):
         super(BillingBrowser,self).__init__(parent)
+        self.chatSession = chatSession
         self.loggedInStatus = 0
         self.loginCreds = open("../login").read().split(" ")
+        self.setUrl(QtCore.QUrl(QtCore.QString("https://gbadmin.hostgator.com")))
+        self.loadFinished.connect(self.billingLogin)
         self.queuedUrl = False
+        self.chatSession.eventHandler.register("navEvent", self.navResponse)
         
     '''
     Billing tends to drop session when logged in from multiple browsers. The url>login>queue system forces all
     page loads to verify that it's logged in before going to the new billing page. 
     '''
-    def setUrl(self, url):
+    def queueSetUrl(self, url):
         self.queuedUrl = url
         self.billingLogin()
     
@@ -43,5 +47,11 @@ class BillingBrowser(QtWebKit.QWebView):
             return False
         self.runUrlQueue()
         return True
-
+    
+    def navResponse(self, event):
+        if self.chatSession.dataWidget.selected:
+            if event.navOption == "Gatorbill":
+                self.setVisible(True)
+            else: 
+                self.setVisible(False)
     

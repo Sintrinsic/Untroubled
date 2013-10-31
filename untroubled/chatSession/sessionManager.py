@@ -23,14 +23,18 @@ class sessionManager(object):
    
     def assessChats(self, chatList):
         currentIDs = [currentID[0] for currentID in chatList]
-        new = [filter(lambda c: c[0] not in self.chatIDs) for currentID in chatList]
-        old = [filter(lambda c: c not in currentIDs) for chat in self.chatIDs]
-    
-        for chat in new:
-            self.addSession(chat)
-            
-        for ID in old:
-            self.removeSession(ID)
+        for chat in chatList:
+            chatID = str(chat[0])
+            if not self.chatIDs.has_key(chatID):
+                self.addSession(chat)
+        
+        for ID in self.chatIDs.keys():
+            if ID not in currentIDs and ID > 2000:
+                self.removeSession(ID)
+
+        for chat in chatList:
+            if chat[0] in self.chatIDs.keys():
+                self.chatIDs[chat[0]].addBilling(chat[2])
         
     def addSession(self, chat=None):
         if chat == None:

@@ -260,8 +260,6 @@ class untroubledGui(QtGui.QWidget):
         ''' 
         Custom stuff 
         '''
-
-        
         self.eventManager = EventManager()
         self.chats = sessionManager(self.eventManager)
         self.dashboard = DashboardInterface(self.dashboardWebView, self.chats)
@@ -284,6 +282,8 @@ class untroubledGui(QtGui.QWidget):
         #self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_email_action)
         self.dataFrame_nav_billing_toolbutton.triggered.connect(self.navEvent)
         self.dataFrame_nav_untroubled_toolbutton.triggered.connect(self.navEvent)
+        self.dataframe_nav_console_button.clicked.connect(self.consoleButtonNavEvent)
+        self.dataframe_nav_browser_button.clicked.connect(self.browserButtonNavEvent)
         self.eventManager.register("navEvent", self.navListener)
 
     def retranslateUi(self, untroubled):
@@ -304,9 +304,16 @@ class untroubledGui(QtGui.QWidget):
             self.removeChat(event)
     
     def navEvent(self, action):
-        navEvent = NavEvent("untroubled_nav_clicked", str(action.text()))
+        navEvent = NavEvent("nav_clicked", str(action.text()))
         self.eventManager.call("navEvent", navEvent)
        
+    def consoleButtonNavEvent(self):
+        navEvent = NavEvent("nav_clicked", "console")
+        self.eventManager.call("navEvent", navEvent)
+        
+    def browserButtonNavEvent(self):
+        navEvent = NavEvent("nav_clicked", "browser")
+        self.eventManager.call("navEvent", navEvent)
     
     def addChat(self, event):
         label = event.session.label

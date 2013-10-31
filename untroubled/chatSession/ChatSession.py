@@ -24,8 +24,9 @@ class ChatSession(object):
         self.cmdExecutor = cmdExecutor
         self.eventHandler = eventManager
         self.label = sessionLabel(self.name, None, self)
-        self.dataWidget = dataWidget(None, eventManager, ID)
-        self.billingBrowser = BillingBrowser(self.dataWidget)
+        self.billingBrowser = BillingBrowser(self)
+        self.dataWidget = dataWidget(self, None, eventManager, ID)
+
         self.billingPages = {} #List of billingAccount objects for this chat session [selectedBool,verifiedBool,email, url, object]
         #Message timers to calculate wait times/colors
         self.billingAccounts = {}
@@ -33,9 +34,9 @@ class ChatSession(object):
         self.lastMsgAdmin = 0
 
     def addBilling(self,url):
-        if not self.billingPages.has_key(url) and url != self.queuedUrl:
+        if not self.billingPages.has_key(url):
             self.billingPages[url]=url
-            self.billingBrowser.setUrl(url)
+            self.billingBrowser.queueSetUrl(url)
     
     def removeBilling(self,url):
         pass
