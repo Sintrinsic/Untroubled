@@ -10,6 +10,8 @@
 from PyQt4 import QtCore, QtGui,  QtWebKit
 from untroubled.chatSession.sessionManager import sessionManager
 from untroubled.event.EventManager import EventManager
+from untroubled.dashboard.DashboardInterface import DashboardInterface
+from untroubled.qtwidgets.sessionLabel import sessionLabel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -261,23 +263,19 @@ class untroubledGui(QtGui.QWidget):
         QtCore.QMetaObject.connectSlotsByName(untroubled)
         
         
-        self.dashboard = QtWebKit.QWebView(self.status_frame)
-        #self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
-        self.dashboard.setUrl(QtCore.QUrl(_fromUtf8("http://dashboard.hostgator.com")))
-        self.dashboard.setObjectName(_fromUtf8("dashboard"))
-        self.dashboard.resize(QtCore.QSize(1,1))  
+        self.dashboardWebView = QtWebKit.QWebView(self.status_frame)        
+        self.dashboardWebView.setObjectName(_fromUtf8("dashboardWebView"))
+        self.dashboardWebView.resize(QtCore.QSize(1,1))  
+        
+        ''' 
+        Custom stuff 
+        '''
+        
         self.eventManager = EventManager()
         self.chats = sessionManager(self.eventManager, self.dataframe_body_frame,self.layout_dataframe_body,self.sessions_container_frame,self.dashboard)
-
+        self.dashboard = DashboardInterface(self.dashboardWebView, self.chats)
         QtCore.QObject.connect(self.sessions_add_button, QtCore.SIGNAL("clicked()"), self.addSession)
-        
-        
-        '''        
-        self.dashboard.loadFinished.connect(self.dbLogin)
-        self.chats = sessionManager.sessionManager(self.frame,self.horizontalLayout,self.listView,self.dashboard)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), self.startCheck)
-        '''
-
+        self.eventManager.register("chatEvent", self.chatEventListener)
 
     def retranslateUi(self, untroubled):
         untroubled.setWindowTitle(_translate("untroubled", "Form", None))
@@ -289,45 +287,22 @@ class untroubledGui(QtGui.QWidget):
         self.dataframe_nav_login_button.setText(_translate("untroubled", "Log in", None))
         self.status_label.setText(_translate("untroubled", "Status", None))
         
-    def addSession(self):
-        pass
-
-    '''    
-    def dbLogin(self,success):
-        QtCore.QTimer.singleShot(2000, self.dbLoginTrue)
-        print "login fired"
-        self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
-        #self.dashboard.page().mainFrame().evaluateJavaScript("function check(){unt.chatCallback('hello');setTimeout(function(){check()},2000)}")
-        #self.dashboard.page().mainFrame().evaluateJavaScript("check();") 
+    def chatEventListener(self, event):
+        if event.eventType == "add":
+            self.addChat(event)
+        if event.eventType == "remove":
+            self.removeChat(event)
+            
+    def addChat(self, event):
+        label = event.session.label
+        dataWidget = event.session.dataWidget
+        label.setParent(self.sessions_container_frame)
+        self.layout_sessions_container.addChildWidget(label)
+        dataWidget.setParent(self.dataframe_body_frame)
+        self.layout_dataframe_body.addChildWidget(dataWidget)
+        dataWidget.setVisible(False)
     
-    def dbLoginTrue(self):
-        print "logintrue fired"
-        self.dashboard.page().mainFrame().addToJavaScriptWindowObject("unt", self)
-        self.dashboard.page().mainFrame().evaluateJavaScript("DashboardChatWidgets.staffLogin('"+self.login[0]+"','"+self.login[1]+"')")        
-        
-        QtCore.QTimer.singleShot(2000, self.startCheck)
+    def removeChat(self, event):
+        label = event.session.label
 
-
-    def startCheck(self):    
-        print "Updating Chats"    
-        self.dashboard.page().mainFrame().evaluateJavaScript('cList = "";for(chat in DashboardChatWidgets.chats){if(DashboardChatWidgets.chats[chat].clientId > 1){DashboardChatWidgets.chats[chat].billingUrl="https://gbadmin.hostgator.com/client/"+DashboardChatWidgets.chats[chat].clientId};cList += DashboardChatWidgets.chats[chat].chatId +","+DashboardChatWidgets.chats[chat].customerName+","+DashboardChatWidgets.chats[chat].billingUrl+","+DashboardChatWidgets.chats[chat].start+"|"}')
-        self.dashboard.page().mainFrame().evaluateJavaScript("unt.chatCallback(cList)")
-        QtCore.QTimer.singleShot(4000, self.startCheck)
-
-
-    def fakeCallback(self):
-        self.chatCallback("1245323,Brandon,http://google.com,12354|845823,Bob,http://google.com,12354|1123556,tom,http://google.com,12354")
-        
-    @QtCore.pyqtSlot(str)        
-    def chatCallback(self,chatList):
-
-        chatList = str(chatList)
-        cmds = chatList.split("|")
-        chats = []
-        for c in cmds:
-            if c:
-                eles = c.split(",")
-                chats.append(eles)
-        print "Calling assessChats on "+str(chats)
-        self.chats.assessChats(chats)
-    '''            
+ 

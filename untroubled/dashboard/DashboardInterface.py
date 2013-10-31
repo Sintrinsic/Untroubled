@@ -10,6 +10,7 @@ class DashboardInterface(object):
     def __init__(self, dashboardWebview, sessionManager):
         self.sessionManager = sessionManager
         self.db = dashboardWebview
+        self.db.setUrl(QtCore.QUrl(QtCore.QString("http://dashboard.hostgator.com")))
         self.db.loadFinished.connect(self.urlChanged)
         self.login =  open("../login").read().split(" ")
         self.loggedIn = False

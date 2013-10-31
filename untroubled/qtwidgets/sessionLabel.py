@@ -24,7 +24,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class sessionLabel(QtGui.QWidget):
-    def __init__(self, name, parent):
+    def __init__(self, name, parent=None):
         super(sessionLabel, self).__init__(parent)
         self.setupUi(self,name)
     

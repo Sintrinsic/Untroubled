@@ -46,6 +46,8 @@ class EventManager(object):
 
         
     def __call(self, eventName, event):
+        if not self.handlerList.has_key(eventName):
+            self.handlerList[eventName] = []
         for h in self.handlerList[eventName]:
             #need exception handling here
             h(event)
