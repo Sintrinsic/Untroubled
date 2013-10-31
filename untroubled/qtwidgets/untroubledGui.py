@@ -284,6 +284,7 @@ class untroubledGui(QtGui.QWidget):
         #self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_email_action)
         self.dataFrame_nav_billing_toolbutton.triggered.connect(self.navEvent)
         self.dataFrame_nav_untroubled_toolbutton.triggered.connect(self.navEvent)
+        self.eventManager.register("navEvent", self.navListener)
 
     def retranslateUi(self, untroubled):
         untroubled.setWindowTitle(_translate("untroubled", "Form", None))
@@ -326,6 +327,9 @@ class untroubledGui(QtGui.QWidget):
         self.layout_sessions_container.removeWidget(label)
         self.layout_dataframe_body.removeWidget(dataWidget)
         
+    def navListener(self, event):
+        self.label.setText(QtCore.QString(event.navOption))
+
 
 
  

@@ -21,6 +21,7 @@ class dataWidget(QtGui.QWidget):
             if event.chatID == self.chatID:
                 self.setVisible(True)
                 self.selected = True
+                print "Chat ID "+str(self.chatID)+" selected."
             else:
                 self.setVisible(False)
                 self.selected = False
