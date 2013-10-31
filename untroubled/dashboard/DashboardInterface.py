@@ -5,9 +5,10 @@ Created on Oct 30, 2013
 '''
 from PyQt4 import QtCore, QtGui
 
-class DashboardInterface(object):
+class DashboardInterface(QtCore.QObject):
 
     def __init__(self, dashboardWebview, sessionManager):
+        super(DashboardInterface,self).__init__()
         self.sessionManager = sessionManager
         self.db = dashboardWebview
         self.db.setUrl(QtCore.QUrl(QtCore.QString("http://dashboard.hostgator.com")))

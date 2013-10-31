@@ -12,6 +12,8 @@ from untroubled.chatSession.sessionManager import sessionManager
 from untroubled.event.EventManager import EventManager
 from untroubled.dashboard.DashboardInterface import DashboardInterface
 from untroubled.qtwidgets.sessionLabel import sessionLabel
+from untroubled.event.NavEvent import NavEvent
+from untroubled.qtwidgets.menuAction import menuAction
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -117,8 +119,9 @@ class untroubledGui(QtGui.QWidget):
         self.layout_sessions_container = QtGui.QVBoxLayout(self.sessions_container_frame)
         self.layout_sessions_container.setObjectName(_fromUtf8("layout_sessions_container"))
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.layout_sessions_container.addItem(spacerItem)
         self.layout_sessions_list.addWidget(self.sessions_container_frame)
+        
+        self.layout_sessions_list.addItem(spacerItem)
         self.layout_sessions_main.addWidget(self.sessions_list_frame)
         self.layout_content.addWidget(self.sessions_main_frame)
         self.dataframe_frame_main = QtGui.QFrame(self.content_frame)
@@ -188,20 +191,7 @@ class untroubledGui(QtGui.QWidget):
         self.dataframe_nav_console_button.setFlat(True)
         self.dataframe_nav_console_button.setObjectName(_fromUtf8("dataframe_nav_console_button"))
         
-        self.billingMenu_gatorbill_action = QtGui.QAction("Gatorbill",self.dataFrame_nav_billing_toolbutton)
-        self.billingMenu_search_action = QtGui.QAction("Billing search",self.dataFrame_nav_billing_toolbutton)
-        self.billingMenu_packageSchema_action = QtGui.QAction("Package Schema", self.dataFrame_nav_billing_toolbutton)
-        
-        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_gatorbill_action)
-        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_search_action)
-        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_packageSchema_action)
-        
-        
-        self.untroubledMenu_dns_action = QtGui.QAction("DNS Troubleshooter",self.dataFrame_nav_untroubled_toolbutton)
-        #self.untroubledMenu_email_action = QtGui.QAction("Email Troubleshooter",self.dataFrame_nav_untroubled_toolbutton)
-        
-        self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_dns_action)
-        #self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_email_action)
+
 
         
         self.layout_dataframe_nav_left.addWidget(self.dataframe_nav_console_button)
@@ -270,12 +260,30 @@ class untroubledGui(QtGui.QWidget):
         ''' 
         Custom stuff 
         '''
+
         
         self.eventManager = EventManager()
-        self.chats = sessionManager(self.eventManager, self.dataframe_body_frame,self.layout_dataframe_body,self.sessions_container_frame,self.dashboard)
+        self.chats = sessionManager(self.eventManager)
         self.dashboard = DashboardInterface(self.dashboardWebView, self.chats)
-        QtCore.QObject.connect(self.sessions_add_button, QtCore.SIGNAL("clicked()"), self.addSession)
+        QtCore.QObject.connect(self.sessions_add_button, QtCore.SIGNAL("clicked()"), self.addManualSession)
         self.eventManager.register("chatEvent", self.chatEventListener)
+        
+        self.billingMenu_gatorbill_action = menuAction("Gatorbill",self.dataFrame_nav_billing_toolbutton, self.eventManager)
+        self.billingMenu_search_action = menuAction("Billing search",self.dataFrame_nav_billing_toolbutton, self.eventManager)
+        self.billingMenu_packageSchema_action = menuAction("Package Schema", self.dataFrame_nav_billing_toolbutton, self.eventManager)
+
+        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_gatorbill_action)
+        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_search_action)
+        self.dataFrame_nav_billing_toolbutton.addAction(self.billingMenu_packageSchema_action)
+        
+        
+        self.untroubledMenu_dns_action = menuAction("DNS Troubleshooter",self.dataFrame_nav_untroubled_toolbutton, self.eventManager)
+        #self.untroubledMenu_email_action = QtGui.QAction("Email Troubleshooter",self.dataFrame_nav_untroubled_toolbutton)
+        
+        self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_dns_action)
+        #self.dataFrame_nav_untroubled_toolbutton.addAction(self.untroubledMenu_email_action)
+        self.dataFrame_nav_billing_toolbutton.triggered.connect(self.navEvent)
+        self.dataFrame_nav_untroubled_toolbutton.triggered.connect(self.navEvent)
 
     def retranslateUi(self, untroubled):
         untroubled.setWindowTitle(_translate("untroubled", "Form", None))
@@ -288,21 +296,36 @@ class untroubledGui(QtGui.QWidget):
         self.status_label.setText(_translate("untroubled", "Status", None))
         
     def chatEventListener(self, event):
+        print "chat event fired"
         if event.eventType == "add":
             self.addChat(event)
         if event.eventType == "remove":
             self.removeChat(event)
-            
+    
+    def navEvent(self, action):
+        navEvent = NavEvent("untroubled_nav_clicked", str(action.text()))
+        self.eventManager.call("navEvent", navEvent)
+       
+    
     def addChat(self, event):
         label = event.session.label
         dataWidget = event.session.dataWidget
         label.setParent(self.sessions_container_frame)
-        self.layout_sessions_container.addChildWidget(label)
+        self.layout_sessions_container.addWidget(label)
+        
         dataWidget.setParent(self.dataframe_body_frame)
-        self.layout_dataframe_body.addChildWidget(dataWidget)
+        self.layout_dataframe_body.addWidget(dataWidget)
         dataWidget.setVisible(False)
+    
+    def addManualSession(self):
+        self.chats.addSession()
     
     def removeChat(self, event):
         label = event.session.label
+        dataWidget = event.session.dataWidget
+        self.layout_sessions_container.removeWidget(label)
+        self.layout_dataframe_body.removeWidget(dataWidget)
+        
+
 
  

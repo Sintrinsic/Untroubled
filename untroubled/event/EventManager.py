@@ -17,6 +17,7 @@ class EventManager(object):
         self.handlerList = {}#{eventName:[listener,...],...}
         self.asyncQueue = []#[[eventName, eventObject],...]
         self.locked = False
+        self.runQueue()
         
     def register(self, eventName, callbackMethod):
         if not eventName in self.handlerList.keys():
@@ -43,6 +44,7 @@ class EventManager(object):
                 self.__call(e[0], e[1])
             self.asyncQueue = []
             self.locked = False
+        QtCore.QTimer.singleShot(1000,self.runQueue)
 
         
     def __call(self, eventName, event):

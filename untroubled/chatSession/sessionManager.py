@@ -19,6 +19,7 @@ class sessionManager(object):
     def __init__(self,eventHandler):
         self.eventHandler = eventHandler
         self.chatIDs = {}
+        self.lastManualID = 0
    
     def assessChats(self, chatList):
         currentIDs = [currentID[0] for currentID in chatList]
@@ -31,8 +32,14 @@ class sessionManager(object):
         for ID in old:
             self.removeSession(ID)
         
-    def addSession(self, chat):
-        newSession = ChatSession(chat[1], chat[2], cmdExecutor(chatshell()),self.eventHandler)
+    def addSession(self, chat=None):
+        if chat == None:
+            self.lastManualID += 1
+            nameString = "Custom "+str(self.lastManualID)
+            chat = [self.lastManualID, nameString]
+        print "Adding "+str(chat[1])+" "+str(chat[0])
+        cmdExec = cmdExecutor(self.eventHandler)
+        newSession = ChatSession(chat[1], chat[0], cmdExec ,self.eventHandler)
         chatEvent = ChatEvent("sessionManager_add", chat[0], "add", newSession)
         self.eventHandler.call("chatEvent",chatEvent)
         self.chatIDs[chat[0]] = newSession

@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-
+from untroubled.event.ChatEvent import ChatEvent
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -24,8 +24,9 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class sessionLabel(QtGui.QWidget):
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent=None, chatSession=None):
         super(sessionLabel, self).__init__(parent)
+        self.chatSession = chatSession
         self.setupUi(self,name)
     
     def setupUi(self, sessionLabel,name ):
@@ -35,9 +36,7 @@ class sessionLabel(QtGui.QWidget):
         sessionLabel.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
         self.horizontalLayout = QtGui.QHBoxLayout(sessionLabel)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.name = QtGui.QLineEdit(sessionLabel)
-        self.name.setFrame(False)
-        self.name.setReadOnly(True)
+        self.name = QtGui.QLabel(sessionLabel)
         self.name.setObjectName(_fromUtf8("name"))
         self.horizontalLayout.addWidget(self.name)
         self.time = QtGui.QLabel(sessionLabel)
@@ -55,12 +54,20 @@ class sessionLabel(QtGui.QWidget):
         self.close_button.setObjectName(_fromUtf8("close_button"))
         self.horizontalLayout.addWidget(self.close_button)
         self.name.setText(QtCore.QString(self.nameString))
-
         self.retranslateUi(sessionLabel)
         QtCore.QMetaObject.connectSlotsByName(sessionLabel)
-        #self.mou
+        self.close_button.clicked.connect(self.closeSelf)
 
     def retranslateUi(self, sessionLabel):
         sessionLabel.setWindowTitle(_translate("sessionLabel", "Form", None))
         self.time.setText(_translate("sessionLabel", "2:10", None))
+
+    def mousePressEvent(self, event):
+        chatEvent = ChatEvent("manual_selected", self.chatSession.ID, "selected", self.chatSession)
+        self.chatSession.eventHandler.call("chatEvent",chatEvent)
+        
+
+    def closeSelf(self):
+        self.chatSession.remove()
+        
 

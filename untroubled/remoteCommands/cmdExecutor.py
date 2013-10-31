@@ -3,10 +3,11 @@ Created on Sep 29, 2013
 
 @author: bdupree
 '''
-import shlex, commands
+import shlex, commands, time
 import thread
 from untroubled.event import commandEvent
 from untroubled.event.EventManager import EventManager
+from untroubled.remoteCommands.chatshell import chatshell
 
 class cmdExecutor(object):
     '''
@@ -16,12 +17,14 @@ class cmdExecutor(object):
     Note: removing all entries from untroubled.remoteCommands.commandlist makes all commands go to the local terminal. 
     '''
 
-    def __init__(self,chatShell,eventHandler):
+    def __init__(self,eventHandler):
         self.eventHandler = eventHandler
         self.breakers = ["|",";",">"]
         cmdstr = open('remoteCommands/commandList').read()
         self.cmds = cmdstr.split("\n")
-        self.chatshell = chatShell
+        self.chatshell = False
+        thread.start_new_thread(self.__getChatshell, ())
+
         
     def runCommand(self, cmdStr): ## --------- DEPRICATED. phasing out  ----------
         bashCommand = self.parseCommands(cmdStr)
@@ -30,14 +33,18 @@ class cmdExecutor(object):
         return output
     
     def runCommandAsync(self, cmdStr, identifier):
+        while self.chatshell == False:
+            time.sleep(.5)
         thread.start_new_thread(self.__asyncCmdEventCaller, (cmdStr, identifier))
         
     def __asyncCmdEventCaller(self, cmdStr, identifier):
         resp = self.runCommand(cmdStr)
         event = commandEvent(identifier, cmdStr, resp)
         self.eventHandler.call("cmdEvent", event)
-        
     
+    def __getChatshell(self):
+        self.chatshell = chatshell()
+        
     def parseCommands(self, cmdStr):
         '''
         Parses command string into elements, converts chatshell command output to echo commands, and returns the final bash command. 

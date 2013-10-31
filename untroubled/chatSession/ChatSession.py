@@ -8,6 +8,7 @@ from untroubled.billing.billingAccount import billingAccount
 from untroubled.qtwidgets.sessionLabel import sessionLabel
 from untroubled.qtwidgets.billingBrowser import BillingBrowser
 from untroubled.qtwidgets.dataWidget import dataWidget
+from untroubled.event.ChatEvent import ChatEvent
 
 class ChatSession(object):
     '''
@@ -21,8 +22,9 @@ class ChatSession(object):
         self.name = name
         self.ID = ID  
         self.cmdExecutor = cmdExecutor
-        self.label = sessionLabel(self.name)
-        self.dataWidget = dataWidget(eventManager, ID)
+        self.eventHandler = eventManager
+        self.label = sessionLabel(self.name, None, self)
+        self.dataWidget = dataWidget(None, eventManager, ID)
         self.billingBrowser = BillingBrowser(self.dataWidget)
         self.billingPages = {} #List of billingAccount objects for this chat session [selectedBool,verifiedBool,email, url, object]
         #Message timers to calculate wait times/colors
@@ -50,8 +52,13 @@ class ChatSession(object):
         if self.queuedUrl and not self.billingAccounts.has_key(self.queuedUrl):
             self.billingAccounts[self.queuedUrl] = billingAccount(self.queuedUrl,self.billingBrowser.page().mainFrame())
             
-
-            
+    def select(self):
+        closedEvent = ChatEvent("manual_selectChat", self.ID, "select", self)
+        self.eventHandler.call("chatEvent",closedEvent)
+        
+    def remove(self):
+        closedEvent = ChatEvent("manual_removeChat", self.ID, "remove", self)
+        self.eventHandler.call("chatEvent",closedEvent)
 
 
         
