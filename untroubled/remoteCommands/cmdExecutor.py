@@ -5,7 +5,7 @@ Created on Sep 29, 2013
 '''
 import shlex, commands, time
 import thread
-from untroubled.event import commandEvent
+from untroubled.event.commandEvent import commandEvent
 from untroubled.event.EventManager import EventManager
 from untroubled.remoteCommands.chatshell import chatshell
 

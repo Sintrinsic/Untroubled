@@ -14,7 +14,7 @@ class dnsManager(object):
     def __init__(self, domain, cmdExecutor):
         self.cmdExecutor = cmdExecutor
         hgid = self.cmdExecutor.runCommand("hgid "+domain)
-        infoPat = re.compile("\|([0-9a-zA-Z\.- ]*)\|\s("+domain+")\s\|(.*)\|", re.MULTILINE)
+        infoPat = re.compile("\|([0-9a-zA-Z\.\- ]*)\|\s("+domain+")\s\|(.*)\|", re.MULTILINE)
         matches = infoPat.findall(hgid)
         server = ""
         if len(matches)>2:

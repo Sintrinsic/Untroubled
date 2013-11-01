@@ -5,6 +5,8 @@ Created on Oct 30, 2013
 '''
 from PyQt4 import QtCore, QtGui
 from untroubled.qtwidgets.ConsoleWidget import ConsoleWidget
+from untroubled.qtwidgets.browserWidget2a import browserWidget
+from untroubled.qtwidgets.dnsWidget import Ui_dnsWidget as dnsWidget
 
 class dataWidget(QtGui.QWidget):
 
@@ -22,6 +24,8 @@ class dataWidget(QtGui.QWidget):
         self.activeWidget = None
         self.addWidget("Gatorbill", self.chatSession.billingBrowser)
         self.addWidget("console", ConsoleWidget(self.chatSession) )
+        self.addWidget("browser", browserWidget(self.chatSession))
+        self.addWidget("DNS Troubleshooter", dnsWidget(self.chatSession.cmdExecutor, self.chatSession))
         self.setActiveWidget("Gatorbill")
 
     def selectedListener(self, event):
@@ -29,7 +33,7 @@ class dataWidget(QtGui.QWidget):
             if event.chatID == self.chatID:
                 self.setVisible(True)
                 self.selected = True
-                self.activeWidget.setVisible(True)
+                #self.activeWidget.setVisible(True)
 
                 print "Chat ID "+str(self.chatID)+" selected."
             else:

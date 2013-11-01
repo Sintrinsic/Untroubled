@@ -25,16 +25,18 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_dnsWidget(QtGui.QWidget):
-    def __init__(self,parent,cmdExecutor):
+    def __init__(self,cmdExecutor,chatSession,parent=None):
         super(Ui_dnsWidget,self).__init__(parent)
-        self.setupUi(self)
+        self.chatSession = chatSession
         self.cmdExecutor = cmdExecutor
         self.domains = {}
+        self.setupUi(self)
+
     
     def setupUi(self, dnsWidget):
         dnsWidget.setObjectName(_fromUtf8("dnsWidget"))
         dnsWidget.resize(854, 629)
-        dnsWidget.setStyleSheet(_fromUtf8(""))
+        dnsWidget.setStyleSheet(_fromUtf8("background-color:rgb(200,200,200)"))
         self.layoutV_dns = QtGui.QVBoxLayout(dnsWidget)
         self.layoutV_dns.setSpacing(0)
         self.layoutV_dns.setContentsMargins(0, 4, 0, 0)
@@ -163,6 +165,8 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.tabs_local.setCurrentIndex(0)
         self.tabs_remote.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(dnsWidget)
+        self.chatSession.eventHandler.register("navEvent", self.navResponse)
+
 
     def retranslateUi(self, dnsWidget):
         dnsWidget.setWindowTitle(_translate("dnsWidget", "Form", None))
@@ -173,7 +177,17 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.tabs_remote.setTabText(self.tabs_remote.indexOf(self.tab_remoteStructured), _translate("dnsWidget", "Structured", None))
         self.tabs_remote.setTabText(self.tabs_remote.indexOf(self.tab_remoteRaw), _translate("dnsWidget", "Raw", None))
 
+    def navResponse(self, event):
+        if self.chatSession.dataWidget.selected:
+            if event.navOption == "DNS Troubleshooter":
+                self.setVisible(True)
+            else: 
+                self.setVisible(False)
+                
+    
     def doDNS(self,string):
+        self.table_localStructured.clear()
+        self.table_remoteStructured.clear()
         domain = str(self.combo_selection.currentText())
         print "selected domain: "+domain
         if domain in self.domains.keys():
@@ -206,3 +220,4 @@ class Ui_dnsWidget(QtGui.QWidget):
         self.textb_remoteRaw.setText(dns.remoteZone.text)
         self.tabs_remote.setTabEnabled(1, True)
         
+    
