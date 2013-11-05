@@ -192,6 +192,7 @@ class browserWidget(QtGui.QWidget):
         
         ''' Custon stuff '''
         self.chatSession.eventHandler.register("navEvent", self.navResponse)
+        self.navUrl_textEdit.returnPressed.connect(self.seturl)
 
 
     def retranslateUi(self, mainWidget):
@@ -206,6 +207,9 @@ class browserWidget(QtGui.QWidget):
         self.status_label_right.setText(_translate("mainWidget", "TextLabel", None))
 
 
+    def seturl(self):
+        self.selectedTab.browswer.setUrl(QtCore.QUrl(self.navUrl_textEdit.text()))
+        
     def navResponse(self, event):
         if self.chatSession.dataWidget.selected:
             if event.navOption == "browser":
