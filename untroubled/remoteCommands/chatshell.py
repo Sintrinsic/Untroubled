@@ -9,6 +9,46 @@ from ftfy import fix_text
 import re
 
 class chatshell(object):
+    activePool = []
+    inactivePool = []
+    shellCount = 0
+    
+    @staticmethod
+    def __getChatShell():
+        if len(chatshell.inactivePool) < 1:
+            shell=trueChatshell()
+            chatshell.shellCount += 1
+            print "Chatshell count increased: "+str(chatshell.shellCount)
+        else:
+            print "Shell allocated"
+            shell=chatshell.inactivePool.pop(0)
+        chatshell.activePool.append(shell)
+        return shell    
+    
+    @staticmethod
+    def __returnChatShell(shell):
+        if shell in chatshell.activePool:
+            print "Shell returned"
+            chatshell.activePool.pop(chatshell.activePool.index(shell))
+            chatshell.inactivePool.append(shell)
+        else:
+            print "WARNING: Shell returned when not active"
+            
+            
+    def cmd(self, cmdStr):
+        shell = chatshell.__getChatShell()
+        output = shell.cmd(cmdStr)
+        chatshell.__returnChatShell(shell)
+        return output
+    
+    
+    
+    
+    
+
+
+class trueChatshell(object):
+    
     def __init__(self):
         self.loginCreds = open("../login").read().split(" ")
         self.__connection = SSHClient()
