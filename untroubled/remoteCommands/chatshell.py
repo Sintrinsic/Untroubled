@@ -9,12 +9,16 @@ from ftfy import fix_text
 import re
 
 class chatshell(object):
+    #probably need to make this more thread-friendly
     activePool = []
     inactivePool = []
     shellCount = 0
     
     @staticmethod
     def __getChatShell():
+        '''
+        Allocates an inactive chatshell if available, or creates one if not.
+        '''
         if len(chatshell.inactivePool) < 1:
             shell=trueChatshell()
             chatshell.shellCount += 1
@@ -27,6 +31,10 @@ class chatshell(object):
     
     @staticmethod
     def __returnChatShell(shell):
+        '''
+        Returns an active chatshell to the inactive pool. Mostly useless. 
+        '''
+        
         if shell in chatshell.activePool:
             print "Shell returned"
             chatshell.activePool.pop(chatshell.activePool.index(shell))
@@ -36,6 +44,9 @@ class chatshell(object):
             
             
     def cmd(self, cmdStr):
+        '''
+        Grabs a chatshell, runs the command, and puts it back before returning. 
+        '''
         shell = chatshell.__getChatShell()
         output = shell.cmd(cmdStr)
         chatshell.__returnChatShell(shell)
@@ -48,6 +59,9 @@ class chatshell(object):
 
 
 class trueChatshell(object):
+    '''
+    Interface for chatshell. Creates a persistent connection, and provides methods for running commands/parsing the output. 
+    '''
     
     def __init__(self):
         self.loginCreds = open("../login").read().split(" ")

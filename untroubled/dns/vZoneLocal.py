@@ -37,14 +37,14 @@ class vZoneLocal(object):
     def parseText(self, text):
         #^([a-zA-z0-9\.\@]*)\s+([0-9]*)\s*IN\s+([A-Z]{1,9})\s+([a-zA-Z0-9\.\-]+)
         #recExp = re.compile(r'(?:([\w\.\d\@]+)[\t\s!\n]+([\d]+[\s\t])?IN\s+([\w]+)\s+([\d\w\.\"\= \+\:\?\;\/\\\-]+(?:[\r\n])))+',re.MULTILINE)
-        recExp = re.compile(r'^([\w\.\d\@]+)[\s!\n]+([\d]+)?(?:\s)?IN\s+(A|NS|SOA|CNAME)\s+([\d\w\.\"\= \+\:\?\;\/\\\-]+)',re.MULTILINE)
+        recExp = re.compile(r'^([\w\.\d\@]+)[\s!\n]+([\d]+)?(?:\s)?IN\s+(A|NS|SOA|CNAME|MX)\s+(.+)',re.MULTILINE)
         #need to add check for if TLD doesn't exist.
         
         chunks = recExp.findall(text)
-        nsName = re.compile(r'(?:^; Zone file for ).*?(?:\n)',re.MULTILINE)
+        nsName = re.compile(r'(?:^; Zone [Ff]ile for )(.*?)(?:\n)',re.MULTILINE)
         zoneFile = nsName.findall(text)
         if len(zoneFile)>0:
-            self.zonePrimary = re.sub("; Zone file for ","",str(text[0])).rstrip()
+            self.zonePrimary = zoneFile[0]
         return chunks
             
     def decode(self, records):
@@ -77,7 +77,7 @@ class vZoneLocal(object):
                 self.keyRecords.append(record)
                 continue
             if case=="MX":
-                self.typedRecords["MX"].append([self.cleanTrailingDot(e) for e in record[3:5]])
+                self.typedRecords["MX"].append([self.cleanTrailingDot(e) for e in record[:5]])
                 continue
             self.miscRecords.append(record)
         

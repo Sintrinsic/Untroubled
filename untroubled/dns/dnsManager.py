@@ -13,13 +13,11 @@ class dnsManager(object):
     '''
     def __init__(self, domain, cmdExecutor):
         self.cmdExecutor = cmdExecutor
-        hgid = self.cmdExecutor.runCommand("hgid "+domain)
-        infoPat = re.compile("\|([0-9a-zA-Z\.\- ]*)\|\s("+domain+")\s\|(.*)\|", re.MULTILINE)
-        matches = infoPat.findall(hgid)
+        hgid = self.cmdExecutor.runCommand('ui ushli.org | grep Server: | cut -d": " -f2')
         server = ""
-        if len(matches)>2:
-            server = matches[0]
-        print server
+        if len(hgid)>3:
+            server = hgid
+        print "DNS troubleshooter: targetserver: "+server
         
         self.remoteZone = vZoneRemote(domain, cmdExecutor)
         self.localZone = vZoneLocal(domain, cmdExecutor, server)

@@ -57,8 +57,9 @@ class vZoneRemote(object):
         mainRecordPattern = re.compile(patternString)
         for record in records[2]:
             self.typedRecords["Registrar"].append(record)
-        for record in records[3]:
-            self.typedRecords["Authoritative"].append(record)
+        if len(records) >3:
+            for record in records[3]:
+                self.typedRecords["Authoritative"].append(record)
 
 
     def findErrors(self):
