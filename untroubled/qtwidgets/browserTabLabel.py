@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from untroubled.event.ChatEvent import ChatEvent
+from untroubled.event.genericEvent import GenericEvent
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -24,28 +24,30 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class browserTabLabel(QtGui.QWidget):
-    def __init__(self, browser, id, parent=None):
+    def __init__(self, browser, id, chatSession, parent=None):
         super(browserTabLabel, self).__init__(parent)
+        self.chatSession = chatSession
         self.browser = browser
         self.ID = id
-        self.setupUi(self)
         self.nameString = "New Tab"
+
+        self.setupUi(self)
     
-    def setupUi(self, sessionLabel):
-        sessionLabel.setObjectName(_fromUtf8("sessionLabel"))
-        sessionLabel.resize(255, 33)
-        sessionLabel.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
-        self.horizontalLayout = QtGui.QHBoxLayout(sessionLabel)
+    def setupUi(self, tabLabel):
+        tabLabel.setObjectName(_fromUtf8("tabLabel"))
+        tabLabel.resize(255, 33)
+        tabLabel.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
+        self.horizontalLayout = QtGui.QHBoxLayout(tabLabel)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.name = QtGui.QLabel(sessionLabel)
+        self.horizontalLayout.setMargin(1)
+        self.horizontalLayout.setSpacing(0)
+        self.name = QtGui.QLabel(tabLabel)
         self.name.setObjectName(_fromUtf8("name"))
         self.horizontalLayout.addWidget(self.name)
-
-        self.close_button = QtGui.QPushButton(sessionLabel)
+        self.close_button = QtGui.QPushButton(tabLabel)
         self.close_button.setMinimumSize(QtCore.QSize(20, 0))
         self.close_button.setMaximumSize(QtCore.QSize(20, 16777215))
         self.close_button.setStyleSheet(_fromUtf8("color:red;"))
-        self.close_button.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("../resources/icon-close.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.close_button.setIcon(icon)
@@ -53,26 +55,29 @@ class browserTabLabel(QtGui.QWidget):
         self.close_button.setObjectName(_fromUtf8("close_button"))
         self.horizontalLayout.addWidget(self.close_button)
         self.name.setText(QtCore.QString(self.nameString))
-        self.retranslateUi(sessionLabel)
-        QtCore.QMetaObject.connectSlotsByName(sessionLabel)
+        QtCore.QMetaObject.connectSlotsByName(tabLabel)
         self.close_button.clicked.connect(self.closeSelf)
-        self.chatSession.eventHandler.register("browserEvent",self.selected)
-
-    def retranslateUi(self, sessionLabel):
-        sessionLabel.setWindowTitle(_translate("sessionLabel", "Form", None))
-        self.time.setText(_translate("sessionLabel", "2:10", None))
+        self.chatSession.eventHandler.register(str(self.ID)+"_browserNav",self.selected)
+        self.browser.loadFinished.connect(self.urlChanged)
 
     def mousePressEvent(self, event):
-        chatEvent = ChatEvent("manual_selected", self.ID, "selected", self.chatSession)
-        self.chatSession.eventHandler.call("browserEvent",chatEvent)
+        print "browser tab selected"
+        chatEvent = GenericEvent("tab_selected",{"action":"selected","browser":self.browser,"ID":self.chatSession.ID})
+        eventTypeString = str(self.ID)+"_browserNav"
+        self.chatSession.eventHandler.call(eventTypeString, chatEvent)
         
     def selected(self, event):
-        
-        if event.eventType == "selected" and event.chatID == self.chatSession.ID:
+        print "browser tab selected: event hit"
+        if event.meta["action"] == "selected" and event.meta["browser"].ID == self.browser.ID:
             self.setStyleSheet(_fromUtf8("background-color:rgb(180, 180, 180)"))
+            print self.ID
         else:
-            self.setStyleSheet(_fromUtf8("background-color:rgb(140, 140, 140)"))
+            self.setStyleSheet(_fromUtf8("background-color:rgb(160, 160, 160)"))
 
+    def urlChanged(self):
+        title = str(self.browser.page().mainFrame().title())
+       
+        self.name.setText(title)    
         
     def closeSelf(self):
         self.chatSession.remove()

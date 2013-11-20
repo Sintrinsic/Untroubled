@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui, QtWebKit
+from untroubled.qtwidgets.browserTabLabel import browserTabLabel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -26,9 +27,11 @@ except AttributeError:
 class browserWidget(QtGui.QWidget):
     def __init__(self,chatSession,parent=None):
         super(browserWidget, self).__init__(parent)
+        self.tabCount = 0
         self.chatSession = chatSession
-        
         self.setupUi(self)
+
+
     
     def setupUi(self, mainWidget):
         self.layout_main = QtGui.QHBoxLayout(mainWidget)
@@ -124,20 +127,26 @@ class browserWidget(QtGui.QWidget):
         self.tabs_frame.setObjectName(_fromUtf8("tabs_frame"))
         self.verticalLayout = QtGui.QVBoxLayout(self.tabs_frame)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setMargin(0)
         self.tabs_container_frame = QtGui.QFrame(self.tabs_frame)
         self.tabs_container_frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.tabs_container_frame.setFrameShadow(QtGui.QFrame.Plain)
         self.tabs_container_frame.setObjectName(_fromUtf8("tabs_container_frame"))
+        self.tabs_container_frame.setStyleSheet(QtCore.QString("background-color:none"))
         self.verticalLayout.addWidget(self.tabs_container_frame)
+        self.layout_tabs_container = QtGui.QVBoxLayout(self.tabs_container_frame)
+        self.layout_tabs_container.setSpacing(0)
+        self.layout_tabs_container.setMargin(0)
         self.tabs_add_frame = QtGui.QWidget(self.tabs_frame)
-        self.tabs_add_frame.setMinimumSize(QtCore.QSize(0, 20))
-        self.tabs_add_frame.setMaximumSize(QtCore.QSize(16777215, 20))
-        self.tabs_add_frame.setStyleSheet(_fromUtf8("background-color:rgb(200, 200, 200)"))
+        self.tabs_add_frame.setMinimumSize(QtCore.QSize(0, 25))
+        self.tabs_add_frame.setMaximumSize(QtCore.QSize(16777215, 25))
         self.tabs_add_frame.setObjectName(_fromUtf8("tabs_add_frame"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.tabs_add_frame)
-        self.horizontalLayout_2.setSpacing(0)
-        self.horizontalLayout_2.setMargin(0)
-        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.layout_tabs_add_frame = QtGui.QVBoxLayout(self.tabs_add_frame)#-------------------------------------
+        self.layout_tabs_add_frame.setSpacing(0)
+        self.layout_tabs_add_frame.setMargin(0)
+
+        '''
         self.tabs_add_label = QtGui.QLabel(self.tabs_add_frame)
         self.tabs_add_label.setMinimumSize(QtCore.QSize(16, 16))
         self.tabs_add_label.setMaximumSize(QtCore.QSize(16, 16))
@@ -148,6 +157,15 @@ class browserWidget(QtGui.QWidget):
         self.tabs_add_label.setWordWrap(False)
         self.tabs_add_label.setObjectName(_fromUtf8("tabs_add_label"))
         self.horizontalLayout_2.addWidget(self.tabs_add_label)
+        '''
+        self.tabs_add_button = QtGui.QPushButton(self.tabs_add_frame)
+        self.tabs_add_button.setMinimumSize(QtCore.QSize(0, 25))
+        self.tabs_add_button.setStyleSheet(_fromUtf8("background-color:rgb(150, 150, 150)"))
+        self.tabs_add_button.setFlat(False)
+        addIcon = QtGui.QIcon(QtGui.QPixmap(_fromUtf8("../resources/add.png")))
+        self.tabs_add_button.setIcon(addIcon)
+        self.tabs_add_button.setObjectName(_fromUtf8("tabs_add_button"))
+        self.layout_tabs_add_frame.addWidget(self.tabs_add_button)
         self.verticalLayout.addWidget(self.tabs_add_frame)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem1)
@@ -182,19 +200,35 @@ class browserWidget(QtGui.QWidget):
         self.layout_tabsFrame.addWidget(self.status_frame)
         self.layout_mainFrame.addWidget(self.tabsFrame)
         self.layout_main.addWidget(self.mainFrame)
-        self.tempBrowser = QtWebKit.QWebView(self)
-        self.tempBrowser.setUrl(QtCore.QUrl(QtCore.QString("http://google.com")))
-        self.tempBrowser.setStyleSheet("background-color:none")
-        self.layout_page.addWidget(self.tempBrowser)
+        self.addTab()
         self.retranslateUi(mainWidget)
         QtCore.QMetaObject.connectSlotsByName(mainWidget)
         
-        
         ''' Custon stuff '''
         self.chatSession.eventHandler.register("navEvent", self.navResponse)
-        self.navUrl_textEdit.returnPressed.connect(self.seturl)
+        self.tabs_add_button.clicked.connect(self.addTab)
+        self.navUrl_textEdit.returnPressed.connect(self.setUrl)
+        self.navReload_button.clicked.connect(self.reload)
+        self.navBack_button.clicked.connect(self.back)
+        self.navForward_button.clicked.connect(self.forward)
+        eventTypeString = str(self.chatSession.ID)+"_browserNav"
+        self.chatSession.eventHandler.register(eventTypeString,self.navBrowserChangeListener)
 
 
+
+
+    def setUrl(self):
+        self.activeTab.customSetUrl(str(self.navUrl_textEdit.text()))
+        
+    def back(self):
+        self.activeTab.customGoBack()
+        
+    def forward(self):
+        self.activeTab.customGoForward()
+        
+    def reload(self):
+        self.activeTab.customReload()
+    
     def retranslateUi(self, mainWidget):
         mainWidget.setWindowTitle(_translate("mainWidget", "Form", None))
         self.navBack_button.setText(_translate("mainWidget", "<", None))
@@ -205,10 +239,6 @@ class browserWidget(QtGui.QWidget):
         self.hotbar_tools_toolButton1.setText(_translate("mainWidget", "Tools", None))
         self.status_label_right_2.setText(_translate("mainWidget", "TextLabel", None))
         self.status_label_right.setText(_translate("mainWidget", "TextLabel", None))
-
-
-    def seturl(self):
-        self.selectedTab.browswer.setUrl(QtCore.QUrl(self.navUrl_textEdit.text()))
         
     def navResponse(self, event):
         if self.chatSession.dataWidget.selected:
@@ -216,3 +246,71 @@ class browserWidget(QtGui.QWidget):
                 self.setVisible(True)
             else: 
                 self.setVisible(False)
+                
+    def addTab(self):
+        browser = BrowserWebView(self.chatSession, self.tabCount, self)
+        browser.setVisible(False)
+        tab = browserTabLabel(browser,self.chatSession.ID,self.chatSession, self)
+        self.layout_page.addWidget(browser)
+        self.layout_tabs_container.addWidget(tab)
+        tab.mousePressEvent(None)
+        self.tabCount +=1
+        
+    def navBrowserChangeListener(self,event):
+        self.navUrl_textEdit.setText(event.meta["browser"].url().toString())
+        
+
+        
+                
+                
+                
+class BrowserWebView(QtWebKit.QWebView):
+
+    def __init__(self, chatSession, ID, parent=None):
+        super(BrowserWebView,self).__init__(parent)
+        self.ID = ID
+        self.browserWidget = parent
+        self.chatSession = chatSession
+        self.setUrl(QtCore.QUrl(QtCore.QString("http://google.com")))
+        self.setStyleSheet(QtCore.QString("background-color:none;"))
+        eventTypeString = str(self.chatSession.ID)+"_browserNav"
+        self.chatSession.eventHandler.register(eventTypeString,self.__tabNavListner)
+        self.urlChanged.connect
+
+        
+    ''' placeholders for custom interaction-triggered extra code '''
+    def customSetUrl(self, urlString):
+        if "http" not in urlString:
+            urlString = "http://"+urlString
+        url = QtCore.QUrl(QtCore.QString(urlString))
+        print "URL changed to "+ urlString
+        self.setUrl(url)
+    
+    def customGoBack(self):
+        self.back()
+    
+    def customGoForward(self):
+        self.forward()
+        
+    def customReload(self):
+        self.reload()
+        
+    def updateUrl(self):
+        if self.isVisible():
+            self.browserWidget.navUrl_textEdit.setText(self.url().toString())
+    
+        
+    def __tabNavListner(self,event):
+        if event.meta["action"] == "selected":
+            if event.meta["browser"] == self:
+                self.setVisible(True)
+                self.browserWidget.activeTab = self
+            else:
+                self.setVisible(False)
+            
+        
+    
+    
+
+        
+        

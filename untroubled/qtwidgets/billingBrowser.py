@@ -17,6 +17,7 @@ class BillingBrowser(QtWebKit.QWebView):
         self.loadFinished.connect(self.billingLogin)
         self.queuedUrl = False
         self.chatSession.eventHandler.register("navEvent", self.navResponse)
+        self.setStyleSheet(QtCore.QString("background-color:none;"))
         
     '''
     Billing tends to drop session when logged in from multiple browsers. The url>login>queue system forces all
